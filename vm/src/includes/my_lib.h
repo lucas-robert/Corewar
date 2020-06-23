@@ -10,9 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
 
 #define READLINE_READ_SIZE 512
 
@@ -57,8 +55,13 @@ int isnum(char a);
 char *my_strndup(char *a, int n);
 int	my_n_atoi_base(char *str, int len, int base);
 int my_hex_to_dec(int hex);
-int bytes_to_int(char *to_convert, int size);
-
+int bytes_to_int(unsigned char *to_convert, int size);
+int my_abs(int c);
+int	my_memcmp(const void *s1, const void *s2, size_t n);
+void *my_memcpy(void *dest, const void *src, size_t n);
+void my_memdel(void **ap);
+void *my_memmove(void *dest, const void *src, size_t n);
+void *my_memset(void *b, int c, size_t n);
 
 //Structs functions
 

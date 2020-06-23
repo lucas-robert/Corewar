@@ -9,8 +9,8 @@ void my_ld(t_vm *machine, t_process *process, const cw_t *operation)
 	index += 1;
 	for (int i = 0; i < operation->num_args; i++)
 	{
-		type = (acb >> (2 * (4 - i)) & 3);
-		if ((type & operation->type[i]) != type)
+		type = (acb >> (2 * (3 - i)) & 3);
+		if (!is_acb_valid(type, operation->type[i]))
 		{
 			printf("Invalid acb \n");
 			process->cycle_till_exec = -1;

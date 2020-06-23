@@ -2,6 +2,7 @@
 
 void my_ldi(t_vm *machine, t_process *process, const cw_t *operation)
 {
+	// T_DIR SIZE = 2;
 	int arg[operation->num_args];
 	unsigned char type;
 	int index = 0;
@@ -9,7 +10,7 @@ void my_ldi(t_vm *machine, t_process *process, const cw_t *operation)
 	index += 1;
 	for (int i = 0; i < operation->num_args; i++)
 	{
-		type = (acb >> (2 * (4 - i)) & 3);
+		type = (acb >> (2 * (3 - i)) & 3);
 		if ((type & operation->type[i]) != type)
 		{
 			printf("Invalid acb \n");

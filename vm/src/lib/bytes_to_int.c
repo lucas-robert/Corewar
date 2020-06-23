@@ -1,10 +1,10 @@
 #include <my_lib.h>
-int bytes_to_int(char *to_convert, int size)
+int bytes_to_int(unsigned char *to_convert, int size)
 {
 	union
 	{
 		int integer;
-		char bytes[sizeof(int)];
+		unsigned char bytes[sizeof(int)];
 	} res;
 
 	for (int i = 0; i < sizeof(int); i++)

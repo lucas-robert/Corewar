@@ -1,6 +1,6 @@
 #include <corewar2.h>
 
-void print_memory(char *battlefield)
+void print_memory(unsigned char *battlefield)
 {
 	for (int line = 0; line < MEM_SIZE / BYTES_PER_LINE; line++)
 	{

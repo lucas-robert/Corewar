@@ -114,7 +114,7 @@ typedef struct s_champion{
 	char name[PROG_NAME_LENGTH + 1];
 	char comment[COMMENT_LENGTH + 1];
 	int exec_code_size;
-	char code[PROCESS_MAX_SIZE + 1];
+	unsigned char code[PROCESS_MAX_SIZE + 1];
 
 }t_champion;
 
@@ -147,13 +147,15 @@ typedef struct s_process
 # define BYTES_PER_LINE  16
 # define PRINT_STEP      512
 
+# define STARTING_CHAMPION_NUMBER 1
+
 typedef struct s_vm {
 	int dump_cycle;
 	int current_cycle;
 	int cycle_to_die;
 	int cycle_delta;
 	int nb_check;
-	char battlefield[MEM_SIZE + 1];
+	unsigned char battlefield[MEM_SIZE + 1];
 	t_champion *last_alive;
 	t_champion_array *champions;
 	t_node *process_stack;
@@ -168,14 +170,13 @@ typedef struct s_vm {
 
 int my_error(ERRORS err_code);
 void init_vm(t_vm *machine, t_champion_array *champions, int dump_cycle);
-void print_memory(char *battlefield);
+void print_memory(unsigned char *battlefield);
 int parse_champions(t_champion_array *champions, int ac, char **av);
 int play(t_vm *machine);
 void print_results(t_vm *machine);
-
 t_champion *get_champion_by_id(t_vm *machine, t_process *process);
 // Operations
-
+#define CONTINUE -2
 void my_live(t_vm *machine, t_process *process, const cw_t *operation);
 void my_ld(t_vm *machine, t_process *process, const cw_t *operation);
 void my_st(t_vm *machine, t_process *process, const cw_t *operation);
@@ -197,7 +198,7 @@ void my_aff(t_vm *machine, t_process *process, const cw_t *operation);
 
 # define MODULO 1
 # define NO_MODULO 0
-int read_bytes(int size, char *battlefield, int pc);
+int read_bytes(int size, unsigned char *battlefield, int pc);
 int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t type, char modulo);
 int get_reg_number(t_vm *machine, t_process *process, int *index, args_type_t type);
 

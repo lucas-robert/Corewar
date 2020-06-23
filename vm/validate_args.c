@@ -34,9 +34,9 @@ int get_next_n(char **av, int *index)
 
 int set_id(t_champion_array *champions)
 {
-	int index = 0;
+	int index = STARTING_CHAMPION_NUMBER;
 
-	while (index < champions->size)
+	while (index < champions->size + STARTING_CHAMPION_NUMBER)
 	{
 		champions->array[index].id = index;
 		index++;
@@ -44,19 +44,12 @@ int set_id(t_champion_array *champions)
 	return 0;
 }
 
-char *disassemble(char *buffer)
-{
-	(void)buffer;
-	printf("TODO: disasemble\n");
-	return NULL;
-}
-
 int get_champion_data(t_champion *champion, int fd)
 {
 	struct stat info;
 	int runner = EXEC_MAGIC_LEN;
 	fstat(fd, &info);
-	char buffer[info.st_size + 1];
+	unsigned char buffer[info.st_size + 1];
 	int reader = read(fd, buffer, info.st_size);
 	buffer[reader] = 0;
 
@@ -65,17 +58,20 @@ int get_champion_data(t_champion *champion, int fd)
 		my_printf("%s: ", champion->filename);
 		return (my_error(WRONG_MAGIC));
 	}
-	my_strncpy(champion->name, &buffer[runner], PROG_NAME_LENGTH);
+	my_memcpy(champion->name, (char *)&buffer[runner], PROG_NAME_LENGTH);
 	runner += PROG_NAME_LENGTH;
 	runner += NULL_SEPARATOR_SIZE;
 	champion->exec_code_size = bytes_to_int(&buffer[runner], sizeof(champion->exec_code_size));
 	runner += sizeof(champion->exec_code_size);
-	my_strncpy(champion->comment, &buffer[runner], COMMENT_LENGTH);
+	my_memcpy(champion->comment, &buffer[runner], COMMENT_LENGTH);
 	runner += COMMENT_LENGTH;
 	runner += NULL_SEPARATOR_SIZE;
 
-	my_bzero(champion->code, PROCESS_MAX_SIZE + 1);
-	my_strcpy(champion->code, &buffer[runner]);
+	my_memset(champion->code, 0, PROCESS_MAX_SIZE + 1);
+	for (int i = 0; i < champion->exec_code_size; i++)
+	{
+		champion->code[i] = buffer[runner + i];
+	}
 	champion->color = COLOR_TABLE[champion->id];
 
 	// printf("[%s] =>  %s %s %d %s\n", champion->filename, champion->name, champion->comment, champion->exec_code_size, champion->code);

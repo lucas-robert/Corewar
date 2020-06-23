@@ -1,17 +1,25 @@
 #include <corewar2.h>
 
-int read_bytes(int size, char *battlefield, int pc)
+int read_bytes(int size, unsigned char *battlefield, int pc)
 {
-	int res = 0;
-	int index = 0;
 
-	while (index < size)
+	union {
+		int integer;
+		char bytes[4];
+	} bytes_reader;
+
+
+	bytes_reader.integer = 0;
+	int i = size;
+	printf("Reading %d bytes => ", size);
+	while(i)
 	{
-		res = res << 8;
-		res |= (unsigned char)battlefield[(pc + index) % MEM_SIZE];
+		i--;
+		printf("%.2x ", battlefield[pc + (size - i - 1)]);
+		bytes_reader.bytes[i] = battlefield[pc + (size - i - 1)];
 	}
-
-	return res;
+	printf(" \n");
+	return bytes_reader.integer;
 }
 
 int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t type, char modulo)
@@ -21,15 +29,15 @@ int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t ty
 	switch (type)
 	{
 		case REG_CODE:
-			res = process->registers[read_bytes(T_REG, machine->battlefield, process->pc)];
-			*index += T_REG;
+			res = process->registers[read_bytes(T_REG, machine->battlefield, (process->pc + *index) % MEM_SIZE)];
+			*index += 1;
 			break;
 		case DIR_CODE:
-			res = read_bytes(T_DIR, machine->battlefield, process->pc);
-			*index += T_DIR;
+			res = read_bytes(4, machine->battlefield, (process->pc + *index) % MEM_SIZE);
+			*index += 4;
 			break;
 		case IND_CODE:
-		address = read_bytes(T_IND, machine->battlefield, process->pc);
+		address = read_bytes(T_IND, machine->battlefield, (process->pc + *index) % MEM_SIZE);
 			if (modulo)
 			{
 				res = read_bytes(T_REG, machine->battlefield, ((process->pc + address % IDX_MOD) % MEM_SIZE));
@@ -39,20 +47,19 @@ int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t ty
 				res = read_bytes(T_REG, machine->battlefield, ((process->pc + address) % MEM_SIZE));
 			}
 
-			*index += T_IND;
+			*index += 2;
 			break;
 	}
-	printf("Memory reader result is: %d", res);
+	printf("Memory reader result is: %d\n", res);
 	return res;
 }
 
 
 int get_reg_number(t_vm *machine, t_process *process, int *index, args_type_t type)
 {
-	if (type != REG_CODE)
-		return -1;
 	int res = 0;
-	res = read_bytes(T_REG, machine->battlefield, process->pc);
+	res = read_bytes(T_REG, machine->battlefield, (process->pc + *index) % MEM_SIZE);
 	*index += T_REG;
+	printf("Reg number is %d\n", res);
 	return res;
 }

@@ -10,7 +10,7 @@ void my_sub(t_vm *machine, t_process *process, const cw_t *operation)
 
 	for (int i = 0; i < operation->num_args; i++)
 	{
-		type = (acb >> (2 * (4 - i)) & 3);
+		type = (acb >> (2 * (3 - i)) & 3);
 		if (!is_acb_valid(type, operation->type[i]))
 		{
 			process->cycle_till_exec = -1;
@@ -21,7 +21,7 @@ void my_sub(t_vm *machine, t_process *process, const cw_t *operation)
 		index += 1;
 	};
 	process->registers[reg[2]] = process->registers[reg[0]] - process->registers[reg[1]];
-	process->pc = (process->pc + index % MEM_SIZE);
+	process->pc = ((process->pc + index) % MEM_SIZE);
 	process->carry = (process->registers[reg[2]] ? 1 : 0);
 
 }
