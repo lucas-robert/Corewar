@@ -32,13 +32,6 @@ int get_next_n(char **av, int *index)
 		return 0;
 }
 
-void set_color(t_champion *champion)
-{
-	(void)champion;
-	//Todo: set champion color
-
-}
-
 int set_id(t_champion_array *champions)
 {
 	int index = 0;
@@ -167,7 +160,7 @@ int handle_option(char **av, int *index, int *dump_cycle, int *next_n)
 int parse_champions(t_champion_array *champions, int ac, char **av)
 {
 	int index = 1;
-	int dump_cycle = 0;
+	int dump_cycle = -1;
 	int next_n = -1;
 	int champion_id = 0;
 	(void)ac;
@@ -195,6 +188,6 @@ int parse_champions(t_champion_array *champions, int ac, char **av)
 	}
 	champions->size = champion_id;
 	if (read_champions(champions) > 0)
-		return -1;
+		return -2;
 	return dump_cycle;
 }

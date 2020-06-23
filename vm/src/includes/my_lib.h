@@ -77,4 +77,5 @@ void delete_node(t_node **head, void *data);
 // Stack
 void push(t_node **head, void *data);
 void *pop(t_node **head);
+int stack_len(t_node **head);
 #endif

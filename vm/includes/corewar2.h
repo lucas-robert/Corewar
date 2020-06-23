@@ -27,7 +27,7 @@
 /*
 **
 */
-typedef char                    args_type_t;
+typedef unsigned char                    args_type_t;
 
 # define T_REG                   1 << 0
 # define T_DIR                   1 << 1
@@ -129,7 +129,7 @@ typedef struct s_process
 {
 	int champion_id;
 	int id;
-	int registers[REG_NUMBER];
+	int registers[REG_NUMBER + 1]; //From r1 to rREG_NUMBER, leave the r0 unuse
 	int carry;
 	int pc;
 	int last_live;
@@ -160,15 +160,20 @@ typedef struct s_vm {
 
 } t_vm;
 
+#define FIRST(x) ((x & 192) >> 5); //192 = 11 00 00 00
+#define SECOND(x) ((x & 48) >> 3); //48  = 00 11 00 00
+#define THIRD(x) ((x & 12) >> 1);  //12  = 00 00 11 00
+#define FOURTH(x) ((x & 3));       //3   = 00 00 00 11
+
 
 int my_error(ERRORS err_code);
 void init_vm(t_vm *machine, t_champion_array *champions, int dump_cycle);
 void print_memory(char *battlefield);
 int parse_champions(t_champion_array *champions, int ac, char **av);
-void play(t_vm *machine);
+int play(t_vm *machine);
 void print_results(t_vm *machine);
-int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t type);
 
+t_champion *get_champion_by_id(t_vm *machine, t_process *process);
 // Operations
 
 void my_live(t_vm *machine, t_process *process, const cw_t *operation);
@@ -188,4 +193,18 @@ void my_lldi(t_vm *machine, t_process *process, const cw_t *operation);
 void my_lfork(t_vm *machine, t_process *process, const cw_t *operation);
 void my_aff(t_vm *machine, t_process *process, const cw_t *operation);
 
+// Memory reader
+
+# define MODULO 1
+# define NO_MODULO 0
+int read_bytes(int size, char *battlefield, int pc);
+int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t type, char modulo);
+int get_reg_number(t_vm *machine, t_process *process, int *index, args_type_t type);
+
+//Operations helpers
+int is_acb_valid(args_type_t acb, args_type_t op);
+int is_register(args_type_t type);
+int is_direct(args_type_t type);
+int is_indirect(args_type_t type);
+t_process *copy_process(t_vm *machine, t_process *root, int address);
 #endif

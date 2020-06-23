@@ -25,12 +25,14 @@ int main(int ac, char **av)
 	t_champion_array champions;
 	t_vm machine;
 	int dump_cycle = parse_champions(&champions, ac, av);
-	if (dump_cycle < 0)
+	if (dump_cycle < -1)
 		return 1;
 	init_vm(&machine, &champions, dump_cycle);
 	speaker(&champions);
-	play(&machine);
-	print_results(&machine);
+	if (!play(&machine))
+	{
+		print_results(&machine);
+	}
 	delete_vm(&machine);
 	return 0;
 }

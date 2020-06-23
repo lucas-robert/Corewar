@@ -18,3 +18,15 @@ void *pop(t_node **head)
     free(temp);
     return popped;
 }
+
+int stack_len(t_node **head)
+{
+	t_node *tmp = *head;
+	int res = 0;
+	while (tmp)
+	{
+		res++;
+		tmp = tmp->next;
+	}
+	return res;
+}

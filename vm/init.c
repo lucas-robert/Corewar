@@ -2,8 +2,9 @@
 
 void init_registers(t_process *process, int player_id)
 {
-	process->registers[0] = player_id;
-	for (int i = 1; i < REG_NUMBER; i++)
+	process->registers[0] = 0; // Unused, as registers start from r1..r16
+	process->registers[1] = -player_id;
+	for (int i = 2; i < REG_NUMBER + 1; i++)
 	{
 		process->registers[i] = 0;
 	}
@@ -33,7 +34,6 @@ void place_champions(t_vm *machine, t_champion_array *champions)
 	int padding = MEM_SIZE / champions->size;
 	for (int i = 0; i < champions->size; i++)
 	{
-		printf("CODE IS %s", champions->array[i].code);
 		my_strcpy(&machine->battlefield[padding * i], champions->array[i].code);
 		init_process(machine, (padding * i), &champions->array[i], i);
 		machine->last_alive = &champions->array[i];

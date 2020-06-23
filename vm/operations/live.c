@@ -4,7 +4,7 @@ void my_live(t_vm *machine, t_process *process, const cw_t *operation)
 {
 	printf("Live operation\n");
 
-	int champion_number = bytes_to_int(&machine->battlefield[((process->pc + sizeof(operation->code)) % MEM_SIZE)], sizeof(int));
+	int champion_number = machine->battlefield[(process->pc % MEM_SIZE)];
 	if (champion_number < machine->champions->size)
 	{
 		machine->last_alive = &machine->champions->array[champion_number];

@@ -24,7 +24,9 @@ SRC =	main.c \
 		operations/sub.c \
 		operations/xor.c \
 		operations/zjmp.c \
+		operations/op_helpers.c \
 		memory_reader.c \
+
 
 OBJECT_MY_VM = $(SRC:.c=.o)
 INCLUDES_MY_VM = -I ./includes/

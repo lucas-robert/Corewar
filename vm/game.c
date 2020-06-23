@@ -24,12 +24,11 @@ int find_winner(t_vm *machine)
 	t_node *tmp = machine->process_stack;
 	while (tmp)
 	{
+		if (nb_process == 0)
+			machine->last_alive = get_champion_by_id(machine, (t_process*) tmp->data);
 		nb_process++;
-		machine->last_alive = get_champion_by_id(machine, (t_process*) tmp->data);
-		printf("set last alive!");
 		tmp = tmp->next;
 	}
-	printf("\n");
 	return (nb_process > 1 ? 0 : 1);
 }
 
@@ -77,7 +76,6 @@ void check_alive_processes(t_vm *machine)
 	{
 		machine->last_alive = get_champion_by_id(machine, machine->process_stack->data);
 	}
-	//TODO: Decrement cycle to die if it hasn't been deceremented since MAX_CHECKS;
 
 	return ;
 }
@@ -109,11 +107,18 @@ void execute_process(t_vm *machine, t_process *current_process)
 		if (is_op_valid(current_process->next_op))
 		{
 			(*operations[current_process->next_op])(machine, current_process, &cw_tab[current_process->next_op]);
-			current_process->pc += (sizeof(cw_tab[current_process->next_op].type)) % MEM_SIZE;
+			if (current_process->cycle_till_exec == -1)
+			{   // If op as an invalid acb
+				printf("Process %d just died! He fought bravely till the end (wrong acb)\n", current_process->id);
+				printf("He was playing for %s", get_champion_by_id(machine, current_process)->name);
+				delete_node(&machine->process_stack, current_process);
+				return ;
+			}
 		}
 		current_process->next_op = get_op_id(machine->battlefield[current_process->pc]);
 		if (!is_op_valid(current_process->next_op))
 		{
+			printf("Process %d just died! Attempting to read an invalid op\n", current_process->id);
 			delete_node(&machine->process_stack, current_process);
 			return ;
 		}
@@ -124,17 +129,22 @@ void execute_process(t_vm *machine, t_process *current_process)
 }
 
 
-void play(t_vm *machine)
+int play(t_vm *machine)
 {
 	while(1)
 	{
 		printf("Cycle %d / %d\n", machine->current_cycle, machine->dump_cycle);
-		if ((machine->dump_cycle && machine->current_cycle == machine->dump_cycle)|| find_winner(machine))
+		if (machine->dump_cycle >= 0 && machine->current_cycle == machine->dump_cycle)
 		{
-			printf("Found a winner!");
-			break;
+			printf("Dump cycle\n");
+			print_memory(machine->battlefield);
+			return 1;
 		}
-
+		if (find_winner(machine))
+		{
+			printf("Found a winner!\n");
+			return 0;
+		}
 		if (machine->current_cycle % machine->cycle_to_die == 0)
 		{
 			check_alive_processes(machine);
