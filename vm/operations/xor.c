@@ -13,11 +13,13 @@ void my_xor(t_vm *machine, t_process *process, const cw_t *operation)
 		type = (acb >> (2 * (3 - i)) & 3);
 		if (!is_acb_valid(type, operation->type[i]))
 		{
-			process->cycle_till_exec = -1;
-			return ;
-			printf("Invalid acb for player %s\n", (get_champion_by_id(machine, process))->name);
+			return (operation_failed(process));
 		}
 		arg[i] = get_reg_number(machine, process, &index, type);
+		if (arg[i] > REG_NUMBER)
+		{
+			return (operation_failed(process));
+		}
 	}
 
 	process->carry = (process->registers[arg[2]] = 0 ? 1 : 0);

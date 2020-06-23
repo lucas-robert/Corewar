@@ -2,6 +2,7 @@
 
 void my_add(t_vm *machine, t_process *process, const cw_t *operation)
 {
+	//T_REG | T_REG | T_REG
 	printf("process %d: Add operation\n", process->id);
 	int reg[operation->num_args];
 	unsigned char type;
@@ -13,12 +14,13 @@ void my_add(t_vm *machine, t_process *process, const cw_t *operation)
 		type = (acb >> (2 * (3 - i)) & 3);
 		if (!is_acb_valid(type, operation->type[i]))
 		{
-			process->cycle_till_exec = -1;
-			return ;
-			printf("Invalid acb for player %s\n", (get_champion_by_id(machine, process))->name);
+			return (operation_failed(process));
 		}
 		reg[i] = get_reg_number(machine, process, &index, type);
-		index += 1;
+		if (reg[i] > REG_NUMBER)
+		{
+			return (operation_failed(process));
+		}
 	};
 	process->registers[reg[2]] = process->registers[reg[0]] + process->registers[reg[1]];
 	process->pc = (process->pc + index) % MEM_SIZE;

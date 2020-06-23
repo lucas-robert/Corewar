@@ -16,13 +16,15 @@ void my_and(t_vm *machine, t_process *process, const cw_t *operation)
 		type = (acb >> (2 * (3 - i)) & 3);
 		if (!is_acb_valid(type, operation->type[i]))
 		{
-			process->cycle_till_exec = -1;
-			printf("Invalid acb for player %s\n", (get_champion_by_id(machine, process))->name);
-			return ;
+			return (operation_failed(process));
 		}
 		if (i == 2)
 		{
 			arg[i] = get_reg_number(machine, process, &index, type);
+			if (arg[i] > REG_NUMBER)
+			{
+				return (operation_failed(process));
+			}
 		}
 		else
 		{

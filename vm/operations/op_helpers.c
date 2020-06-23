@@ -1,5 +1,11 @@
 #include <corewar2.h>
 
+void operation_failed(t_process *process)
+{
+	process->cycle_till_exec = -1;
+	return ;
+}
+
 void copy_registers(t_process *new_process, t_process *root)
 {
 	for (int i = 0; i < REG_NUMBER + 1; i++)

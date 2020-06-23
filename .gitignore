@@ -57,3 +57,4 @@ vm/champs
 vm/corewar
 vm/asm
 vm/custom
+vm/test.c

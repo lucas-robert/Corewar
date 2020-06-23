@@ -50,7 +50,6 @@ int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t ty
 			*index += 2;
 			break;
 	}
-	printf("Memory reader result is: %d\n", res);
 	return res;
 }
 
@@ -60,6 +59,5 @@ int get_reg_number(t_vm *machine, t_process *process, int *index, args_type_t ty
 	int res = 0;
 	res = read_bytes(T_REG, machine->battlefield, (process->pc + *index) % MEM_SIZE);
 	*index += T_REG;
-	printf("Reg number is %d\n", res);
 	return res;
 }

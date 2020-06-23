@@ -167,16 +167,30 @@ typedef struct s_vm {
 #define THIRD(x) ((x & 12) >> 1);  //12  = 00 00 11 00
 #define FOURTH(x) ((x & 3));       //3   = 00 00 00 11
 
-
+//Errors.c
 int my_error(ERRORS err_code);
+
+// Init.c
 void init_vm(t_vm *machine, t_champion_array *champions, int dump_cycle);
+t_champion *set_last_alive(t_vm *machine);
+
+// print_memory.c
 void print_memory(unsigned char *battlefield);
+
+//validate_args.c
 int parse_champions(t_champion_array *champions, int ac, char **av);
+
+// game.c
 int play(t_vm *machine);
-void print_results(t_vm *machine);
 t_champion *get_champion_by_id(t_vm *machine, t_process *process);
+
+// results.c
+void print_results(t_vm *machine);
+
 // Operations
+
 #define CONTINUE -2
+
 void my_live(t_vm *machine, t_process *process, const cw_t *operation);
 void my_ld(t_vm *machine, t_process *process, const cw_t *operation);
 void my_st(t_vm *machine, t_process *process, const cw_t *operation);
@@ -195,7 +209,6 @@ void my_lfork(t_vm *machine, t_process *process, const cw_t *operation);
 void my_aff(t_vm *machine, t_process *process, const cw_t *operation);
 
 // Memory reader
-
 # define MODULO 1
 # define NO_MODULO 0
 int read_bytes(int size, unsigned char *battlefield, int pc);
@@ -208,4 +221,5 @@ int is_register(args_type_t type);
 int is_direct(args_type_t type);
 int is_indirect(args_type_t type);
 t_process *copy_process(t_vm *machine, t_process *root, int address);
+void operation_failed(t_process *process);
 #endif

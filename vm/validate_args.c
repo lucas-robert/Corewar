@@ -34,12 +34,12 @@ int get_next_n(char **av, int *index)
 
 int set_id(t_champion_array *champions)
 {
-	int index = STARTING_CHAMPION_NUMBER;
+	int id = STARTING_CHAMPION_NUMBER;
 
-	while (index < champions->size + STARTING_CHAMPION_NUMBER)
+	for (int i = 0; i < champions->size; i++)
 	{
-		champions->array[index].id = index;
-		index++;
+		champions->array[i].id = id;
+		id++;
 	}
 	return 0;
 }

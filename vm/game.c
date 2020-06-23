@@ -8,7 +8,11 @@ int is_op_valid(int c)
 t_champion *get_champion_by_id(t_vm *machine, t_process *process)
 {
 	if (process)
+	{
+		printf("Process found \n");
+		printf("%s\n",machine->champions->array[process->champion_id].name);
 		return (&machine->champions->array[process->champion_id]);
+	}
 	return NULL;
 }
 
@@ -24,11 +28,14 @@ int find_winner(t_vm *machine)
 	t_node *tmp = machine->process_stack;
 	while (tmp)
 	{
-		if (nb_process == 0)
-			machine->last_alive = get_champion_by_id(machine, (t_process*) tmp->data);
 		nb_process++;
 		tmp = tmp->next;
 	}
+	if (nb_process == 1)
+	{
+		machine->last_alive = set_last_alive(machine);
+	}
+
 	return (nb_process > 1 ? 0 : 1);
 }
 
@@ -40,7 +47,7 @@ void print_list(t_node **head)
 	{
 		printf("Node %d: Process id %d", index, ((t_process*)tmp->data)->id);
 		index++;
-		tmp = tmp ->next;
+		tmp = tmp->next;
 	}
 }
 
@@ -74,7 +81,7 @@ void check_alive_processes(t_vm *machine)
 	}
 	if (nb_alive > 0)
 	{
-		machine->last_alive = get_champion_by_id(machine, machine->process_stack->data);
+		machine->last_alive = set_last_alive(machine);
 	}
 
 	return ;
@@ -102,7 +109,7 @@ void execute_process(t_vm *machine, t_process *current_process)
 	void (*operations[])(t_vm*, t_process*, const cw_t*) = {&my_live, &my_ld, &my_st, &my_add, &my_sub, &my_and, &my_or, &my_xor, &my_zjmp, &my_ldi, &my_sti, &my_fork, &my_lld, &my_lldi, &my_lfork, &my_aff};
 	if (current_process->cycle_till_exec > 0)
 	{
-		printf("Procces [%d] will execute %d (%s) in %d cycles\n",  current_process->id, current_process->next_op, cw_tab[current_process->next_op].mnemonique, current_process->cycle_till_exec);
+		// printf("Procces [%d] will execute %d (%s) in %d cycles\n",  current_process->id, current_process->next_op, cw_tab[current_process->next_op].mnemonique, current_process->cycle_till_exec);
 		current_process->cycle_till_exec -= 1;
 		return ;
 	}
@@ -111,9 +118,9 @@ void execute_process(t_vm *machine, t_process *current_process)
 		//printf("next op of process [%d] => %d (%s)\n", current_process->id, current_process->next_op, cw_tab[current_process->next_op].mnemonique);
 		if (is_op_valid(current_process->next_op) && current_process->next_op != CONTINUE)
 		{
-			printf("Process [%d] enters op %d (%s)\n",  current_process->id, current_process->next_op, cw_tab[current_process->next_op].mnemonique);
+			// printf("Process [%d] enters op %d (%s)\n",  current_process->id, current_process->next_op, cw_tab[current_process->next_op].mnemonique);
 			(*operations[current_process->next_op])(machine, current_process, &cw_tab[current_process->next_op]);
-			printf("Process [%d] exits op. PC : %d now pointing to: %d\n",current_process->id, current_process->pc, machine->battlefield[current_process->pc]);
+			// printf("Process [%d] exits op. PC : %d now pointing to: %d\n",current_process->id, current_process->pc, machine->battlefield[current_process->pc]);
 			if (current_process->cycle_till_exec == -1)
 			{   // If op as an invalid acb
 				printf("Process %d just died! He fought bravely till the end (wrong acb)\n", current_process->id);
@@ -123,7 +130,7 @@ void execute_process(t_vm *machine, t_process *current_process)
 			}
 		}
 		current_process->next_op = get_op_id(machine->battlefield[current_process->pc]);
-		printf("Process next op => %d", current_process->next_op);
+		// printf("Process next op => %d", current_process->next_op);
 		if (!is_op_valid(current_process->next_op))
 		{
 			printf("Process %d just died! Attempting to read an invalid op\n", current_process->id);
@@ -135,9 +142,9 @@ void execute_process(t_vm *machine, t_process *current_process)
 		}
 		if (current_process->next_op != CONTINUE)
 			current_process->cycle_till_exec = cw_tab[current_process->next_op].num_cycles;
-		printf("Next op set. PC: %d pointing at %x\n", current_process->pc, machine->battlefield[current_process->pc]);
+		// printf("Next op set. PC: %d pointing at %x\n", current_process->pc, machine->battlefield[current_process->pc]);
 		current_process->pc = (current_process->pc + 1) % MEM_SIZE;
-		printf("PC moved. PC: %d pointing at %x\n", current_process->pc, machine->battlefield[current_process->pc]);
+		// printf("PC moved. PC: %d pointing at %x\n", current_process->pc, machine->battlefield[current_process->pc]);
 	}
 	return ;
 }
@@ -147,7 +154,7 @@ int play(t_vm *machine)
 {
 	while(1)
 	{
-		printf("Cycle %d / %d\n", machine->current_cycle, machine->dump_cycle);
+		// printf("Cycle %d / %d\n", machine->current_cycle, machine->dump_cycle);
 		if (machine->dump_cycle >= 0 && machine->current_cycle == machine->dump_cycle)
 		{
 			printf("Dump cycle\n");
@@ -159,11 +166,15 @@ int play(t_vm *machine)
 			printf("Found a winner!\n");
 			return 0;
 		}
-		if (machine->current_cycle  && (machine->current_cycle % machine->cycle_to_die == 0))
+		if (machine->current_cycle && (machine->current_cycle % machine->cycle_to_die == 0))
 		{
-			printf("machine->cycle to die = %d\n", machine->cycle_to_die);
-			printf("!!! CYCLE TO DIE !!!! Checking alive processes\n");
+			// printf("!!! CYCLE TO DIE !!!! Checking alive processes\n");
 			check_alive_processes(machine);
+			if (find_winner(machine))
+			{
+				printf("Found a winner!\n");
+				return 0;
+			}
 		}
 		t_node *runner = machine->process_stack;
 		while (runner)

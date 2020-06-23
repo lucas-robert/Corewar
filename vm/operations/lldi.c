@@ -12,13 +12,15 @@ void my_lldi(t_vm *machine, t_process *process, const cw_t *operation)
 		type = (acb >> (2 * (3 - i)) & 3);
 		if ((type & operation->type[i]) != type)
 		{
-			printf("Invalid acb \n");
-			process->cycle_till_exec = -1;
-			return ;
+			return (operation_failed(process));
 		}
 		if (i == 2)
 		{
 			arg[i] = get_reg_number(machine, process, &index, type);
+			if (arg[i] > REG_NUMBER)
+			{
+				return (operation_failed(process));
+			}
 		}
 		else
 		{

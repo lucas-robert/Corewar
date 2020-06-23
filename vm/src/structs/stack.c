@@ -1,4 +1,4 @@
-#include "my_lib.h"
+#include <my_lib.h>
 
 void push(t_node **head, void *data)
 {
@@ -29,4 +29,17 @@ int stack_len(t_node **head)
 		tmp = tmp->next;
 	}
 	return res;
+}
+
+void *get_last_in_stack(t_node **head)
+{
+	t_node *tmp = *head;
+	if (tmp)
+	{
+		while (tmp->next)
+		{
+			tmp = tmp->next;
+		}
+	}
+	return tmp;
 }

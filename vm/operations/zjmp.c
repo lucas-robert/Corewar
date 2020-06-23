@@ -12,7 +12,7 @@ void my_zjmp(t_vm *machine, t_process *process, const cw_t *operation)
 	}
 	else
 	{
-		process->pc = (process->pc + (2)) % MEM_SIZE;
+		process->pc = (process->pc + 2) % MEM_SIZE;
 	}
 	printf("zjmp operation\n");
 }

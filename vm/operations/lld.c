@@ -19,6 +19,10 @@ void my_lld(t_vm *machine, t_process *process, const cw_t *operation)
 		if (is_register(type))
 		{
 			arg[i] = get_reg_number(machine, process, &index, type);
+			if (arg[i] > REG_NUMBER)
+			{
+				return (operation_failed(process));
+			}
 		}
 		else
 		{

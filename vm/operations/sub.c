@@ -18,7 +18,10 @@ void my_sub(t_vm *machine, t_process *process, const cw_t *operation)
 			printf("Invalid acb for player %s\n", (get_champion_by_id(machine, process))->name);
 		}
 		reg[i] = get_reg_number(machine, process, &index, type);
-		index += 1;
+		if (reg[i] > REG_NUMBER)
+		{
+			return (operation_failed(process));
+		}
 	};
 	process->registers[reg[2]] = process->registers[reg[0]] - process->registers[reg[1]];
 	process->pc = ((process->pc + index) % MEM_SIZE);

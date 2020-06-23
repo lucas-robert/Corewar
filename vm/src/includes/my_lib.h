@@ -81,4 +81,5 @@ void delete_node(t_node **head, void *data);
 void push(t_node **head, void *data);
 void *pop(t_node **head);
 int stack_len(t_node **head);
+void *get_last_in_stack(t_node **head);
 #endif
