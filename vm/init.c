@@ -2,7 +2,7 @@
 
 t_champion *set_last_alive(t_vm *machine)
 {
-	return (get_champion_by_id(machine, ((t_process *)((t_node*)get_last_in_stack(&machine->process_stack))->data)));
+	return (get_champion_by_process(machine, ((t_process *)((t_node*)get_last_in_stack(&machine->process_stack))->data)));
 }
 
 
@@ -43,7 +43,7 @@ void place_champions(t_vm *machine, t_champion_array *champions)
 	for (int i = 0; i < champions->size; i++)
 	{
 		my_memcpy(&machine->battlefield[padding * i], champions->array[i].code, PROCESS_MAX_SIZE);
-		init_process(machine, (padding * i), i);
+		init_process(machine, (padding * i), i + 1);
 	}
 	return ;
 }
@@ -54,6 +54,7 @@ void init_vm(t_vm *machine, t_champion_array *champions, int dump_cycle)
 	machine->nb_check = 0;
 	machine->dump_cycle = dump_cycle;
 	machine->current_cycle = 0;
+	machine->nb_alive = 0;
 	machine->process_stack = NULL;
 	machine->champions = champions;
 	my_memset(machine->battlefield, 0 , MEM_SIZE + 1);

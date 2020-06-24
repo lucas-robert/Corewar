@@ -79,7 +79,7 @@ typedef struct op_s     op_t;
 #define YELLOW "\x1b[33m"
 #define BLUE "\x1b[34m"
 #define MAGENTA "\x1b[35m"
-#define CYAN "\x1b[36m"
+#define CYAN "\x1b[1;36m"
 #define RESET "\x1b[0m"
 
 
@@ -144,7 +144,7 @@ typedef struct s_process
 # define CYCLE_DELTA     50
 # define NBR_LIVE        40
 # define MAX_CHECKS      10
-# define BYTES_PER_LINE  16
+# define BYTES_PER_LINE  64
 # define PRINT_STEP      512
 
 # define STARTING_CHAMPION_NUMBER 1
@@ -155,6 +155,7 @@ typedef struct s_vm {
 	int cycle_to_die;
 	int cycle_delta;
 	int nb_check;
+	int nb_alive;
 	unsigned char battlefield[MEM_SIZE + 1];
 	t_champion *last_alive;
 	t_champion_array *champions;
@@ -175,14 +176,15 @@ void init_vm(t_vm *machine, t_champion_array *champions, int dump_cycle);
 t_champion *set_last_alive(t_vm *machine);
 
 // print_memory.c
-void print_memory(unsigned char *battlefield);
+void print_memory(t_vm *machine, char flag);
 
 //validate_args.c
 int parse_champions(t_champion_array *champions, int ac, char **av);
 
 // game.c
 int play(t_vm *machine);
-t_champion *get_champion_by_id(t_vm *machine, t_process *process);
+t_champion *get_champion_by_process(t_vm *machine, t_process *process);
+void set_next_op(t_vm *machine, t_process *process);
 
 // results.c
 void print_results(t_vm *machine);
@@ -211,6 +213,7 @@ void my_aff(t_vm *machine, t_process *process, const cw_t *operation);
 // Memory reader
 # define MODULO 1
 # define NO_MODULO 0
+
 int read_bytes(int size, unsigned char *battlefield, int pc);
 int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t type, char modulo);
 int get_reg_number(t_vm *machine, t_process *process, int *index, args_type_t type);
@@ -222,4 +225,7 @@ int is_direct(args_type_t type);
 int is_indirect(args_type_t type);
 t_process *copy_process(t_vm *machine, t_process *root, int address);
 void operation_failed(t_process *process);
+void debug(int pc, unsigned char *battlefield);
+void copy_bytes(t_vm *machine, int address, int storage);
+int ring(int pc);
 #endif

@@ -32,7 +32,7 @@ OBJECT_MY_VM = $(SRC:.c=.o)
 INCLUDES_MY_VM = -I ./includes/
 INCLUDES_LIB = -I ./src/includes
 LIB = ./src/lib.a
-SANITIZE = -g3 -fsanitize=address
+SANITIZE = -g3 -fsanitize=address -Wall -Wextra -Werror
 CLAFGS = -Wall -Wextra -Werror
 
 

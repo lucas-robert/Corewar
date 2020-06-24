@@ -4,32 +4,28 @@ void my_ld(t_vm *machine, t_process *process, const cw_t *operation)
 {
 	int arg[operation->num_args];
 	unsigned char type;
-	int index = 0;
-	char acb = machine->battlefield[(process->pc + index) % MEM_SIZE];
+	int index = 1;
+	unsigned char acb = machine->battlefield[ring(process->pc + index)];
 	index += 1;
 	for (int i = 0; i < operation->num_args; i++)
 	{
 		type = (acb >> (2 * (3 - i)) & 3);
-		if (!is_acb_valid(type, operation->type[i]))
+		if (i == 0)
 		{
-			return (operation_failed(process));
+			arg[i] = get_byte_value(machine, process, &index, type, MODULO);
 		}
-		if (is_register(type))
+		else if (i == 1)
 		{
+			// debug(ring(process->pc+index), machine->battlefield);
 			arg[i] = get_reg_number(machine, process, &index, type);
 			if (arg[i] > REG_NUMBER)
 			{
 				return (operation_failed(process));
 			}
 		}
-		else
-		{
-			arg[i] = get_byte_value(machine, process, &index, type, MODULO);
-		}
 	}
-
 	process->registers[arg[1]] = arg[0];
-	process->carry = (arg[operation->num_args -1] = 0 ? 1 : 0);
-	process->pc = (process->pc + index) % MEM_SIZE;
-	printf("Process %d: ld operation\n", process->id);
+	process->carry = (arg[0] == 0 ? 1 : 0);
+	process->pc = ring(process->pc + index);
+	printf("Process %d | %s %d r%d\n", process->id, operation->mnemonique, process->registers[arg[1]], arg[1]);
 }

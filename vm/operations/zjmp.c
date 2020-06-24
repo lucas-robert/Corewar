@@ -6,18 +6,16 @@ void my_zjmp(t_vm *machine, t_process *process, const cw_t *operation)
 	(void)operation;
 	int address;
 	int index = 1;
-	printf("Entering zjmp ==>\n");;
+	address = read_bytes(2, machine->battlefield, ring(process->pc + index));
+	index += 2;
 	if (process->carry)
 	{
-		address = read_bytes(2, machine->battlefield, ring(process->pc + index));
-		// printf("Jumpoing to %d\n", address);
 		process->pc = ring(process->pc + (address % IDX_MOD));
-		printf("Process %d Zjmp to %d\n",process->id, process->pc);
+		printf("Process %d | %s %d OK\n", process->id, operation->mnemonique, address);
 	}
 	else
 	{
-		printf("Process %d failed zjmp\n",process->id);
-		process->pc = ring(process->pc + index + 2);
+		printf("Process %d | %s %d FAIL\n", process->id, operation->mnemonique, address);
+		process->pc = ring(process->pc + index);
 	}
-	// printf("zjmp operation\n");
 }
