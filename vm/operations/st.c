@@ -7,18 +7,11 @@ void my_st(t_vm *machine, t_process *process, const cw_t *operation)
 	unsigned char type;
 	int index = 1;
 	unsigned char acb = machine->battlefield[ring(process->pc + index)];
-	// debug(process->pc + index, machine->battlefield);
-	printf("Address of battlefield in st => %p", &machine->battlefield);
+
 	index += 1;
 	for (int i = 0; i < operation->num_args; i++)
 	{
 		type = (acb >> (2 * (3 - i)) & 3);
-		// if (!is_acb_valid(type, operation->type[i]))
-		// {
-		// 	debug(process->pc + index, machine->battlefield);
-		// 	printf("Fail at i = %d %d\n", i, T_REG | T_IND);
-		// 	return (operation_failed(process));
-		// }
 		if (i == 0)
 		{
 			arg[i] = get_reg_number(machine, process, &index, type);
