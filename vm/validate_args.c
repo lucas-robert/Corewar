@@ -130,7 +130,7 @@ int read_champions(t_champion_array *champions)
 
 int handle_option(char **av, int *index, int *dump_cycle, int *next_n)
 {
-	if (my_strcmp(av[*index], "-dump") == 0)
+	if (my_strcmp(av[*index], "-dump") == 0 || my_strcmp(av[*index], "-d") == 0)
 	{
 		*dump_cycle = get_dump_cycle(av, index);
 		if (*dump_cycle < 0)
@@ -166,7 +166,7 @@ int parse_champions(t_champion_array *champions, int ac, char **av)
 		if (av[index][0] == '-')
 		{
 			if (handle_option(av, &index, &dump_cycle, &next_n) > 0)
-				return -1;
+				return -2;
 		}
 		else
 		{
