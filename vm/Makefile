@@ -1,13 +1,14 @@
 NAME = corewar
 
 SRC =	main.c \
-		errors/errors.c \
-		cpu/validate_args.c \
-		cpu/init.c \
-		cpu/print_memory.c \
-		cpu/results.c \
 		cpu/game.c \
+		cpu/memory_reader.c \
 		cpu/op.c \
+		errors/errors.c \
+		gui/print_memory.c \
+		gui/results.c \
+		initializer/champ_init.c \
+		initializer/machine_init.c \
 		operations/add.c \
 		operations/aff.c \
 		operations/and.c \
@@ -25,14 +26,14 @@ SRC =	main.c \
 		operations/xor.c \
 		operations/zjmp.c \
 		operations/op_helpers.c \
-		cpu/memory_reader.c \
-
+		parser/options.c \
+		parser/validate_args.c
 
 OBJECT_MY_VM = $(SRC:.c=.o)
 INCLUDES_MY_VM = -I ./includes/
 INCLUDES_LIB = -I ./src/includes
 LIB = ./src/lib.a
-SANITIZE = -g3 -fsanitize=address -Wall -Wextra -Werror
+SANITIZE = -fsanitize=address -Wall -Wextra -Werror
 CLAFGS = -Wall -Wextra -Werror
 
 
@@ -46,12 +47,11 @@ $(NAME) : $(OBJECT_MY_VM)
 	@echo "\033[0;32m[COREWAR COMPILED]\033[0;0m"
 
 %.o: %.c includes/*.h
-	gcc -g -o $@ -c $< $(INCLUDES_MY_VM) $(SANITIZE) $(INCLUDES_LIB)
+	gcc -g -o $@ -c $< $(INCLUDES_MY_VM) $(SANITIZE) $(CFLAGS) $(INCLUDES_LIB)
 
 clean:
 	make -C ./src clean
 	rm -f $(OBJECT_MY_VM)
-	rm -f TAGS
 
 fclean: clean
 	rm -f ./src/lib.a

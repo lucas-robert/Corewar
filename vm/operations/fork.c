@@ -6,11 +6,11 @@ void my_fork(t_vm *machine, t_process *process, const cw_t *operation)
 	t_process *new_process;
 
 	int index = 1;
-	int address = read_bytes(2, machine->battlefield, ring(process->pc + index));
+	int address = read_bytes(ADDRESS, machine->battlefield, ring(process->pc + index));
 
 	address = ring(process->pc + (address % IDX_MOD));
 	new_process = copy_process(machine, process, address);
-	index += 2;
+	index += ADDRESS;
 
 	push(&machine->process_stack, (void*)new_process);
 	set_next_op(machine, new_process);

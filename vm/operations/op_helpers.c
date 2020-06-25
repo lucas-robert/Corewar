@@ -46,16 +46,6 @@ t_process *copy_process(t_vm *machine, t_process *root, int address)
 	return new_process;
 }
 
-int is_acb_valid(args_type_t acb, args_type_t op)
-{
-	if ((acb & op) != acb)
-	{
-		printf("type is %d, should be %d\n", acb, op);
-		return 0;
-	}
-	return 1;
-}
-
 int is_register(args_type_t type)
 {
 	return ((type & T_REG) == type);

@@ -17,12 +17,10 @@ t_champion* get_champion_by_id(t_vm *machine, int champion_id)
 
 void my_live(t_vm *machine, t_process *process, const cw_t *operation)
 {
-	// printf("Live operation\n");
 
 	(void)operation;
-	int champion_number = read_bytes(4, machine->battlefield, ring(process->pc + 1));
+	int champion_number = read_bytes(NUMBER, machine->battlefield, ring(process->pc + 1));
 	process->last_live = machine->current_cycle;
-	// printf("Champion number of live op %d\n", champion_number);
 	t_champion *last_alive = get_champion_by_id(machine, champion_number);
 	if (last_alive)
 	{

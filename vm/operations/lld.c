@@ -16,7 +16,6 @@ void my_lld(t_vm *machine, t_process *process, const cw_t *operation)
 		}
 		else if (i == 1)
 		{
-			// debug(ring(process->pc+index), machine->battlefield);
 			arg[i] = get_reg_number(machine, process, &index, type);
 			if (arg[i] > REG_NUMBER)
 			{
@@ -27,5 +26,6 @@ void my_lld(t_vm *machine, t_process *process, const cw_t *operation)
 	process->registers[arg[1]] = arg[0];
 	process->carry = (arg[0] == 0 ? 1 : 0);
 	process->pc = ring(process->pc + index);
-	printf("Process %d | %s %d r%d\n", process->id, operation->mnemonique, process->registers[arg[1]], arg[1]);
+	if (machine->verbosity == 4)
+		printf("Process %d | %s %d r%d\n", process->id, operation->mnemonique, process->registers[arg[1]], arg[1]);
 }

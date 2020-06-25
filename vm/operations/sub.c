@@ -2,7 +2,6 @@
 
 void my_sub(t_vm *machine, t_process *process, const cw_t *operation)
 {
-	// printf("process %d: sub operation\n", process->id);
 	int reg[operation->num_args];
 	unsigned char type;
 	int index = 1;
@@ -12,10 +11,6 @@ void my_sub(t_vm *machine, t_process *process, const cw_t *operation)
 	for (int i = 0; i < operation->num_args; i++)
 	{
 		type = (acb >> (2 * (3 - i)) & 3);
-		// if (!is_acb_valid(type, operation->type[i]))
-		// {
-		// 	return (operation_failed(process));
-		// }
 		if (i == 2)
 		{
 			reg[i] = get_reg_number(machine, process, &index, type);

@@ -56,27 +56,27 @@ int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t ty
 	switch (type)
 	{
 		case REG_CODE:
-			res = process->registers[read_bytes(1, machine->battlefield, ring(process->pc + *index))];
-			*index += 1;
+			res = process->registers[read_bytes(REGISTER, machine->battlefield, ring(process->pc + *index))];
+			*index += REGISTER;
 			break;
 		case DIR_CODE:
 			// debug(ring(process->pc + *index), machine->battlefield);
-			res = read_bytes(4, machine->battlefield, ring(process->pc + *index));
-			*index += 4;
+			res = read_bytes(NUMBER, machine->battlefield, ring(process->pc + *index));
+			*index += NUMBER;
 			break;
 		case IND_CODE:
-			address = read_bytes(2, machine->battlefield, ring(process->pc + *index));
+			address = read_bytes(ADDRESS, machine->battlefield, ring(process->pc + *index));
 			if (modulo)
 			{
 				// printf("ADDRESS IS %d\n", ring(process->pc + (address % IDX_MOD)));
 				// debug(ring(process->pc + (address % IDX_MOD)), machine->battlefield);
-				res = read_bytes(4, machine->battlefield, ring(process->pc + (address % IDX_MOD)));
+				res = read_bytes(NUMBER, machine->battlefield, ring(process->pc + (address % IDX_MOD)));
 			}
 			else
 			{
-				res = read_bytes(4, machine->battlefield, ring(process->pc + address));
+				res = read_bytes(NUMBER, machine->battlefield, ring(process->pc + address));
 			}
-			*index += 2;
+			*index += ADDRESS;
 			break;
 	}
 	return res;

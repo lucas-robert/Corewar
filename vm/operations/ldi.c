@@ -11,10 +11,6 @@ void my_ldi(t_vm *machine, t_process *process, const cw_t *operation)
 	for (int i = 0; i < operation->num_args; i++)
 	{
 		type = (acb >> (2 * (3 - i)) & 3);
-		// if ((type & operation->type[i]) != type)
-		// {
-		// 	return (operation_failed(process));
-		// }
 		if (i == 2)
 		{
 			arg[i] = get_reg_number(machine, process, &index, type);
@@ -25,9 +21,8 @@ void my_ldi(t_vm *machine, t_process *process, const cw_t *operation)
 		}
 		else if (is_direct(type))
 		{
-			arg[i] = read_bytes(2, machine->battlefield, ring(process->pc + index));
-			// printf("DIRECT: %d\n", arg[i]);
-			index += 2;
+			arg[i] = read_bytes(ADDRESS, machine->battlefield, ring(process->pc + index));
+			index += ADDRESS;
 		}
 		else
 		{

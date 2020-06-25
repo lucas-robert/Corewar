@@ -8,6 +8,7 @@ void my_xor(t_vm *machine, t_process *process, const cw_t *operation)
 	int index = 1;
 	unsigned char acb  = machine->battlefield[ring(process->pc + index)];
 	index += 1;
+	
 	for (int i = 0; i < operation->num_args; i++)
 	{
 		type = (acb >> (2 * (3 - i)) & 3);

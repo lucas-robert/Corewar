@@ -2,34 +2,12 @@
 
 static const char *COLOR_TABLE[] = {RED, GREEN, YELLOW, BLUE};
 
-int get_dump_cycle(char **av, int *index)
-{
-	if (av[*index + 1])
-	{
-		(*index)++;
-		return (my_atoi(av[*index]));
-	}
-	else
-		return 0;
-}
-
 void swap(t_champion *a, t_champion *b)
 {
 	t_champion tmp;
 	tmp = *a;
 	*a = *b;
 	*b = tmp;
-}
-
-int get_next_n(char **av, int *index)
-{
-	if (av[*index + 1])
-	{
-		(*index)++;
-		return (my_atoi(av[*index]));
-	}
-	else
-		return 0;
 }
 
 int set_id(t_champion_array *champions)
@@ -62,7 +40,7 @@ int get_champion_data(t_champion *champion, int fd)
 	runner += PROG_NAME_LENGTH;
 	runner += NULL_SEPARATOR_SIZE;
 
-	champion->exec_code_size = read_bytes(4, buffer, runner);
+	champion->exec_code_size = read_bytes(NUMBER, buffer, runner);
 	if (champion->exec_code_size > PROCESS_MAX_SIZE)
 		return (my_error(TOO_LONG_CODE, champion->name));
 
@@ -79,7 +57,6 @@ int get_champion_data(t_champion *champion, int fd)
 	champion->last_live = 0;
 
 	return EXIT_SUCCESS;
-
 }
 
 int sort_champion_array(t_champion_array *champions)
@@ -131,84 +108,5 @@ int read_champions(t_champion_array *champions)
 		close(fd);
 		index++;
 	}
-	return EXIT_SUCCESS;
-}
-
-int get_verbosity(char **av, int *index)
-{
-	if (av[*index + 1])
-	{
-		(*index)++;
-		return (my_atoi(av[*index]));
-	}
-	else
-		return 0;
-}
-
-int handle_option(char **av, t_vm *machine, int *index, int *next_n)
-{
-	if (my_strcmp(av[*index], "-dump") == 0 || my_strcmp(av[*index], "-d") == 0)
-	{
-		machine->dump_cycle = get_dump_cycle(av, index);
-		if (machine->dump_cycle < 0)
-		{
-			return (my_error(NEGATIVE_DUMP_CYCLE, NULL));
-		}
-	}
-	else if (my_strcmp(av[*index], "-n") == 0)
-	{
-		*next_n = get_next_n(av, index);
-		if (*next_n < 0 || *next_n > MAX_PLAYERS_NUMBER)
-		{
-			return my_error(WRONG_N_NUMBER, NULL);
-		}
-	}
-	else if (my_strcmp(av[*index], "-v") == 0)
-	{
-		machine->verbosity = get_verbosity(av, index);
-		if (machine->verbosity < 0 || machine->verbosity > 4)
-		{
-			return my_error(WRONG_VERBOSE, NULL);
-		}
-	}
-	else
-	{
-		return (my_error(ERR_ARG, av[*index]));
-	}
-	return EXIT_SUCCESS;
-}
-
-int parse_champions(t_vm *machine, t_champion_array *champions, char **av)
-{
-	int index = 1;
-	int next_n = 0;
-	int champion_id = 0;
-
-	machine->dump_cycle = -1;
-	machine->verbosity = 0;
-
-	while(av[index])
-	{
-		if (av[index][0] == '-')
-		{
-			if (handle_option(av, machine, &index, &next_n) > 0)
-				return EXIT_FAILURE;
-		}
-		else
-		{
-			if (champion_id > MAX_PLAYERS_NUMBER)
-			{
-				return (my_error(TOO_MUCH_CHAMPIONS, NULL));
-			}
-			champions->array[champion_id].filename = av[index];
-			champions->array[champion_id].id = next_n - 1;
-			next_n = 0;
-			champion_id++;
-		}
-		index++;
-	}
-	champions->size = champion_id;
-	if (read_champions(champions) > 0)
-		return EXIT_FAILURE;
 	return EXIT_SUCCESS;
 }

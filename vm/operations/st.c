@@ -32,10 +32,10 @@ void my_st(t_vm *machine, t_process *process, const cw_t *operation)
 		}
 		else if (i == 1 && !is_register(type))
 		{
-			int address = read_bytes(2, machine->battlefield, ring(process->pc + index));
+			int address = read_bytes(ADDRESS, machine->battlefield, ring(process->pc + index));
 			arg[i] = ring(process->pc + (address % IDX_MOD));
 			copy_bytes(machine, arg[1], process->registers[arg[0]]);
-			index += 2;
+			index += ADDRESS;
 			if (machine->verbosity == 4)
 				printf("Process %d | %s r%d %d\n", process->id, operation->mnemonique, arg[0], address);
 		}

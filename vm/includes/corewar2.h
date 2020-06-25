@@ -172,28 +172,64 @@ typedef struct s_vm {
 } t_vm;
 
 
-//Errors.c
-int my_error(ERRORS err_code, char *str);
+/*
+**  Parser
+*/
 
-// Init.c
+// validate_args.case
+int parse_champions(t_vm *machine, t_champion_array *champions, char **av);
+
+//options.c
+int handle_option(char **av, t_vm *machine, int *index, int *next_n);
+
+/*
+**  Initializer
+*/
+
+// champ_init.c
+int read_champions(t_champion_array *champions);
+
+// machine_init.c
 void init_vm(t_vm *machine, t_champion_array *champions);
 t_champion *set_last_alive(t_vm *machine);
 
-// print_memory.c
-void print_memory(t_vm *machine, char flag);
-
-//validate_args.c
-int parse_champions(t_vm *machine, t_champion_array *champions, char **av);
+/*
+**  CPU
+*/
 
 // game.c
 int play(t_vm *machine);
 t_champion *get_champion_by_process(t_vm *machine, t_process *process);
 void set_next_op(t_vm *machine, t_process *process);
 
+// memory_reader.c
+# define MODULO 1
+# define NO_MODULO 0
+
+int read_bytes(int size, unsigned char *battlefield, int pc);
+int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t type, char modulo);
+int get_reg_number(t_vm *machine, t_process *process, int *index, args_type_t type);
+
+/*
+**  Errors
+*/
+// errors.c
+int my_error(ERRORS err_code, char *str);
+
+/*
+**  GUI
+*/
+
+// print_memory.c
+void print_memory(t_vm *machine, char flag);
+
 // results.c
 void print_results(t_vm *machine);
 
-// Operations
+
+/*
+**  Operations
+*/
 
 #define CONTINUE -2
 
@@ -214,13 +250,6 @@ void my_lldi(t_vm *machine, t_process *process, const cw_t *operation);
 void my_lfork(t_vm *machine, t_process *process, const cw_t *operation);
 void my_aff(t_vm *machine, t_process *process, const cw_t *operation);
 
-// Memory reader
-# define MODULO 1
-# define NO_MODULO 0
-
-int read_bytes(int size, unsigned char *battlefield, int pc);
-int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t type, char modulo);
-int get_reg_number(t_vm *machine, t_process *process, int *index, args_type_t type);
 
 //Operations helpers
 int is_acb_valid(args_type_t acb, args_type_t op);

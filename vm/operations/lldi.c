@@ -10,10 +10,6 @@ void my_lldi(t_vm *machine, t_process *process, const cw_t *operation)
 	for (int i = 0; i < operation->num_args; i++)
 	{
 		type = (acb >> (2 * (3 - i)) & 3);
-		// if ((type & operation->type[i]) != type)
-		// {
-		// 	return (operation_failed(process));
-		// }
 		if (i == 2)
 		{
 			arg[i] = get_reg_number(machine, process, &index, type);
@@ -30,5 +26,6 @@ void my_lldi(t_vm *machine, t_process *process, const cw_t *operation)
 
 	process->registers[arg[2]] = read_bytes(sizeof(int), machine->battlefield, (arg[0] + arg[1]) % MEM_SIZE);
 	process->pc = ring(process->pc + index);
-	printf("Process %d | %s %d %d %d\n", process->id, operation->mnemonique, arg[0], arg[1], arg[2]);
+	if (machine->verbosity == 4)
+		printf("Process %d | %s %d %d %d\n", process->id, operation->mnemonique, arg[0], arg[1], arg[2]);
 }

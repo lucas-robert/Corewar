@@ -6,8 +6,8 @@ void my_zjmp(t_vm *machine, t_process *process, const cw_t *operation)
 	(void)operation;
 	int address;
 	int index = 1;
-	address = read_bytes(2, machine->battlefield, ring(process->pc + index));
-	index += 2;
+	address = read_bytes(ADDRESS, machine->battlefield, ring(process->pc + index));
+	index += ADDRESS;
 	if (process->carry)
 	{
 		process->pc = ring(process->pc + (address % IDX_MOD));
