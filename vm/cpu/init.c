@@ -48,13 +48,13 @@ void place_champions(t_vm *machine, t_champion_array *champions)
 	return ;
 }
 
-void init_vm(t_vm *machine, t_champion_array *champions, int dump_cycle)
+void init_vm(t_vm *machine, t_champion_array *champions)
 {
 	machine->cycle_to_die = CYCLE_TO_DIE;
 	machine->nb_check = 0;
-	machine->dump_cycle = dump_cycle;
 	machine->current_cycle = 0;
 	machine->nb_alive = 0;
+	machine->last_check = 0;
 	machine->process_stack = NULL;
 	machine->champions = champions;
 	my_memset(machine->battlefield, 0 , MEM_SIZE + 1);

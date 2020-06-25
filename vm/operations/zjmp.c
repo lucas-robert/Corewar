@@ -11,11 +11,13 @@ void my_zjmp(t_vm *machine, t_process *process, const cw_t *operation)
 	if (process->carry)
 	{
 		process->pc = ring(process->pc + (address % IDX_MOD));
-		printf("Process %d | %s %d OK\n", process->id, operation->mnemonique, address);
+		if (machine->verbosity == 4)
+			printf("Process %d | %s %d OK\n", process->id, operation->mnemonique, address);
 	}
 	else
 	{
-		printf("Process %d | %s %d FAIL\n", process->id, operation->mnemonique, address);
+		if (machine->verbosity == 4)
+			printf("Process %d | %s %d FAIL\n", process->id, operation->mnemonique, address);
 		process->pc = ring(process->pc + index);
 	}
 }

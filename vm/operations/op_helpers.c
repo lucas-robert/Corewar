@@ -42,7 +42,7 @@ t_process *copy_process(t_vm *machine, t_process *root, int address)
 	new_process->next_op = -1;
 	copy_registers(new_process, root);
 
-	printf("New process id:%d\n", new_process->id);
+	// printf("New process id:%d\n", new_process->id);
 	return new_process;
 }
 

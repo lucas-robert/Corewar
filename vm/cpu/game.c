@@ -50,24 +50,37 @@ void print_list(t_node **head)
 	printf("\n");
 }
 
+void print_champions_last_live(t_vm *machine)
+{
+	for (int i = 0; i < machine->champions->size; i++)
+	{
+		printf("Champion [%s] (%d): last_alive: %d\n", machine->champions->array[i].name, machine->champions->array[i].id, machine->champions->array[i].last_live);
+	}
+}
+
 void check_alive_processes(t_vm *machine)
 {
 	t_node *check = machine->process_stack;
+	printf("Entering check alive: %d\n", stack_len(&machine->process_stack));
+
 	while (check)
 	{
-		if (((t_process*)check->data)->last_live >= machine->current_cycle - machine->cycle_to_die)
+
+		if (((t_process*)check->data)->last_live > machine->current_cycle - machine->cycle_to_die)
 		{
 			check = check->next;
 		}
 		else
 		{
+			// printf("Process %d has not been reported alive since %d\n", ((t_process*)check->data)->id, ((t_process*)check->data)->last_live);
 			t_node *tmp = check;
 			check = check->next;
 			delete_node(&machine->process_stack, tmp->data);
 		}
 	}
 
-	if (machine->nb_alive > NBR_LIVE || machine->nb_check > MAX_CHECKS)
+	machine->last_check = machine->current_cycle;
+	if (machine->nb_alive >= NBR_LIVE || machine->nb_check >= MAX_CHECKS)
 	{
 		machine->cycle_to_die -= CYCLE_DELTA;
 		machine->nb_check = 0;
@@ -77,7 +90,9 @@ void check_alive_processes(t_vm *machine)
 		machine->nb_check += 1;
 	}
 	machine->nb_alive = 0;
-	return ;
+	print_champions_last_live(machine);
+
+	printf("Exiting check alive: %d\n", stack_len(&machine->process_stack));
 }
 
 int get_op_id(char position)
@@ -148,11 +163,15 @@ void execute_process(t_vm *machine, t_process *current_process)
 
 int death_checker(t_vm *machine)
 {
-
-	if ((machine->current_cycle && (machine->current_cycle % machine->cycle_to_die == 0)) || machine->cycle_to_die < 0)
+	if (machine->cycle_to_die < 0)
 	{
+		printf("should check at cycle %d\n", machine->current_cycle);
+	}
+	if ((machine->current_cycle && (machine->current_cycle == machine->last_check + machine->cycle_to_die)) || machine->cycle_to_die < 0)
+	{
+		printf("Check alive \n");
 		check_alive_processes(machine);
-		printf("cycle_to_die is now %d\n", machine->cycle_to_die);
+		printf("cycle_to_die is now %d at cycle %d\n", machine->cycle_to_die, machine->current_cycle);
 		if (find_winner(machine))
 		{
 			printf("Found a winner!\n");
@@ -168,8 +187,8 @@ int play(t_vm *machine)
 {
 	while(1)
 	{
-
-		// printf("Cycle %d / %d\n", machine->current_cycle, machine->dump_cycle);
+		if (machine->verbosity == 2)
+			printf("Cycle %d / %d\n", machine->current_cycle, machine->dump_cycle);
 		t_node *runner = machine->process_stack;
 		while (runner)
 		{
@@ -185,14 +204,17 @@ int play(t_vm *machine)
 			delete_list(&machine->process_stack);
 			return 1;
 		}
-		// if (find_winner(machine))
-		// {
-		// 	printf("Found a winner!\n");
-		// 	print_memory(machine, 0);
-		// 	return 0;
-		// }
+		if (find_winner(machine))
+		{
+			printf("Found a winner!\n");
+			print_memory(machine, 0);
+			return 0;
+		}
+
 		if (death_checker(machine))
 			return 0;
+		// print_memory(machine, 1);
+		// printf("\n\n\n");
 		machine->current_cycle += 1;
 	}
 }

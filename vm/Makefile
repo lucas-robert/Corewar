@@ -1,13 +1,13 @@
 NAME = corewar
 
 SRC =	main.c \
-		errors.c \
-		validate_args.c \
-		init.c \
-		print_memory.c \
-		results.c \
-		game.c \
-		op.c \
+		errors/errors.c \
+		cpu/validate_args.c \
+		cpu/init.c \
+		cpu/print_memory.c \
+		cpu/results.c \
+		cpu/game.c \
+		cpu/op.c \
 		operations/add.c \
 		operations/aff.c \
 		operations/and.c \
@@ -25,7 +25,7 @@ SRC =	main.c \
 		operations/xor.c \
 		operations/zjmp.c \
 		operations/op_helpers.c \
-		memory_reader.c \
+		cpu/memory_reader.c \
 
 
 OBJECT_MY_VM = $(SRC:.c=.o)

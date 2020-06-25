@@ -41,42 +41,44 @@ int set_id(t_champion_array *champions)
 		champions->array[i].id = id;
 		id++;
 	}
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 int get_champion_data(t_champion *champion, int fd)
 {
 	struct stat info;
-	int runner = EXEC_MAGIC_LEN;
 	fstat(fd, &info);
 	unsigned char buffer[info.st_size + 1];
 	int reader = read(fd, buffer, info.st_size);
+	int runner = EXEC_MAGIC_LEN;
 	buffer[reader] = 0;
 
-	if (bytes_to_int(buffer, EXEC_MAGIC_LEN) != COREWAR_EXEC_MAGIC)
+	if (read_bytes(sizeof(int), buffer, 0) != COREWAR_EXEC_MAGIC)
 	{
-		my_printf("%s: ", champion->filename);
-		return (my_error(WRONG_MAGIC));
+		return (my_error(WRONG_MAGIC, champion->filename));
 	}
 	my_memcpy(champion->name, (char *)&buffer[runner], PROG_NAME_LENGTH);
+
 	runner += PROG_NAME_LENGTH;
 	runner += NULL_SEPARATOR_SIZE;
-	champion->exec_code_size = bytes_to_int(&buffer[runner], sizeof(champion->exec_code_size));
+
+	champion->exec_code_size = read_bytes(4, buffer, runner);
+	if (champion->exec_code_size > PROCESS_MAX_SIZE)
+		return (my_error(TOO_LONG_CODE, champion->name));
+
 	runner += sizeof(champion->exec_code_size);
 	my_memcpy(champion->comment, &buffer[runner], COMMENT_LENGTH);
+
 	runner += COMMENT_LENGTH;
 	runner += NULL_SEPARATOR_SIZE;
 
 	my_memset(champion->code, 0, PROCESS_MAX_SIZE + 1);
-	for (int i = 0; i < champion->exec_code_size; i++)
-	{
-		champion->code[i] = buffer[runner + i];
-	}
-	champion->color = COLOR_TABLE[champion->id];
+	my_memcpy(champion->code, &buffer[runner], champion->exec_code_size);
 
-	// printf("[%s] =>  %s %s %d %s\n", champion->filename, champion->name, champion->comment, champion->exec_code_size, champion->code);
+	champion->color = COLOR_TABLE[champion->id - 1];
+	champion->last_live = 0;
 
-	return 0;
+	return EXIT_SUCCESS;
 
 }
 
@@ -85,18 +87,19 @@ int sort_champion_array(t_champion_array *champions)
 	int index = 0;
 	while (index < champions->size)
 	{
-		if (champions->array[index].id >= 0)
+		if (champions->array[index].id > 0)
 		{
 			int dest = champions->array[index].id;
-			if (dest >= champions->size)
-				return(my_error(TOO_BIG_N_NUMBER));
+			if (dest > champions->size)
+				return(my_error(TOO_BIG_N_NUMBER, NULL));
+
 			else if (dest != champions->array[dest].id)
 			{
 				swap(&champions->array[index], &champions->array[dest]);
 			}
 			else if (dest != index)
 			{
-				return my_error(SAME_N_NUMBER);
+				return my_error(SAME_N_NUMBER, NULL);
 			}
 		}
 		index++;
@@ -107,35 +110,49 @@ int sort_champion_array(t_champion_array *champions)
 int read_champions(t_champion_array *champions)
 {
 	int index = 0;
+
+	if (champions->size == 0)
+		return (my_error(NO_INPUT_FILE, NULL));
+
 	if (sort_champion_array(champions) > 0)
-		return 1;
+		return EXIT_FAILURE;
+
 	while(index < champions->size)
 	{
-		// printf("Parsing champion number %d: %s\n", champions->array[index].id, champions->array[index].filename);
 		int fd = open(champions->array[index].filename, O_RDONLY);
 		if (fd < 1)
 		{
-			my_printf("%s: ", champions->array[index].filename);
-			return(my_error(NO_SUCH_CHAMPION));
+			return(my_error(NO_SUCH_CHAMPION, champions->array[index].filename));
 		}
 		if (get_champion_data(&(champions->array[index]), fd) > 0)
 		{
-			return(1);
+			return EXIT_FAILURE;
 		}
 		close(fd);
 		index++;
 	}
-	return 0;
+	return EXIT_SUCCESS;
 }
 
-int handle_option(char **av, int *index, int *dump_cycle, int *next_n)
+int get_verbosity(char **av, int *index)
+{
+	if (av[*index + 1])
+	{
+		(*index)++;
+		return (my_atoi(av[*index]));
+	}
+	else
+		return 0;
+}
+
+int handle_option(char **av, t_vm *machine, int *index, int *next_n)
 {
 	if (my_strcmp(av[*index], "-dump") == 0 || my_strcmp(av[*index], "-d") == 0)
 	{
-		*dump_cycle = get_dump_cycle(av, index);
-		if (*dump_cycle < 0)
+		machine->dump_cycle = get_dump_cycle(av, index);
+		if (machine->dump_cycle < 0)
 		{
-			return (my_error(NEGATIVE_DUMP_CYCLE));
+			return (my_error(NEGATIVE_DUMP_CYCLE, NULL));
 		}
 	}
 	else if (my_strcmp(av[*index], "-n") == 0)
@@ -143,47 +160,55 @@ int handle_option(char **av, int *index, int *dump_cycle, int *next_n)
 		*next_n = get_next_n(av, index);
 		if (*next_n < 0 || *next_n > MAX_PLAYERS_NUMBER)
 		{
-			return my_error(WRONG_N_NUMBER);
+			return my_error(WRONG_N_NUMBER, NULL);
+		}
+	}
+	else if (my_strcmp(av[*index], "-v") == 0)
+	{
+		machine->verbosity = get_verbosity(av, index);
+		if (machine->verbosity < 0 || machine->verbosity > 4)
+		{
+			return my_error(WRONG_VERBOSE, NULL);
 		}
 	}
 	else
 	{
-		return (my_error(ERR_ARG));
+		return (my_error(ERR_ARG, av[*index]));
 	}
-	return 0;
+	return EXIT_SUCCESS;
 }
 
-int parse_champions(t_champion_array *champions, int ac, char **av)
+int parse_champions(t_vm *machine, t_champion_array *champions, char **av)
 {
 	int index = 1;
-	int dump_cycle = -1;
-	int next_n = -1;
+	int next_n = 0;
 	int champion_id = 0;
-	(void)ac;
+
+	machine->dump_cycle = -1;
+	machine->verbosity = 0;
 
 	while(av[index])
 	{
 		if (av[index][0] == '-')
 		{
-			if (handle_option(av, &index, &dump_cycle, &next_n) > 0)
-				return -2;
+			if (handle_option(av, machine, &index, &next_n) > 0)
+				return EXIT_FAILURE;
 		}
 		else
 		{
 			if (champion_id > MAX_PLAYERS_NUMBER)
 			{
-				my_error(TOO_MUCH_CHAMPIONS);
-				return -1;
+				return (my_error(TOO_MUCH_CHAMPIONS, NULL));
 			}
 			champions->array[champion_id].filename = av[index];
-			champions->array[champion_id].id = next_n;
-			next_n = -1;
+			champions->array[champion_id].id = next_n - 1;
+			next_n = 0;
 			champion_id++;
 		}
 		index++;
 	}
 	champions->size = champion_id;
 	if (read_champions(champions) > 0)
-		return -2;
-	return dump_cycle;
+		return EXIT_FAILURE;
+	return EXIT_SUCCESS;
 }

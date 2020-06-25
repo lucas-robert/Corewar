@@ -33,5 +33,6 @@ void my_sub(t_vm *machine, t_process *process, const cw_t *operation)
 	process->registers[reg[2]] = reg[0] - reg[1];
 	process->pc = (ring(process->pc + index));
 	process->carry = (process->registers[reg[2]] ? 1 : 0);
-	printf("Process %d | %s %d %d r%d\n", process->id, operation->mnemonique, reg[0], reg[1], reg[2]);
+	if (machine->verbosity == 4)
+		printf("Process %d | %s %d %d r%d\n", process->id, operation->mnemonique, reg[0], reg[1], reg[2]);
 }

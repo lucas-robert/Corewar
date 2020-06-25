@@ -53,6 +53,10 @@ typedef struct op_s     op_t;
 # define REG_SIZE                1 << 2
 # define DIR_SIZE                REG_SIZE
 
+# define REGISTER				 1
+# define ADDRESS				 2
+# define NUMBER 				 4
+
 /*
  * Encoding
  */
@@ -104,7 +108,9 @@ typedef enum e_error
 	SAME_N_NUMBER,
 	NEGATIVE_DUMP_CYCLE,
 	TOO_BIG_N_NUMBER,
-	WRONG_MAGIC
+	WRONG_MAGIC,
+	WRONG_VERBOSE,
+	TOO_LONG_CODE
 } ERRORS;
 
 typedef struct s_champion{
@@ -115,6 +121,7 @@ typedef struct s_champion{
 	char comment[COMMENT_LENGTH + 1];
 	int exec_code_size;
 	unsigned char code[PROCESS_MAX_SIZE + 1];
+	int last_live;
 
 }t_champion;
 
@@ -142,7 +149,7 @@ typedef struct s_process
 */
 # define CYCLE_TO_DIE    1536
 # define CYCLE_DELTA     50
-# define NBR_LIVE        40
+# define NBR_LIVE        21
 # define MAX_CHECKS      10
 # define BYTES_PER_LINE  64
 # define PRINT_STEP      512
@@ -150,10 +157,11 @@ typedef struct s_process
 # define STARTING_CHAMPION_NUMBER 1
 
 typedef struct s_vm {
+	int verbosity;
 	int dump_cycle;
 	int current_cycle;
 	int cycle_to_die;
-	int cycle_delta;
+	int last_check;
 	int nb_check;
 	int nb_alive;
 	unsigned char battlefield[MEM_SIZE + 1];
@@ -163,23 +171,19 @@ typedef struct s_vm {
 
 } t_vm;
 
-#define FIRST(x) ((x & 192) >> 5); //192 = 11 00 00 00
-#define SECOND(x) ((x & 48) >> 3); //48  = 00 11 00 00
-#define THIRD(x) ((x & 12) >> 1);  //12  = 00 00 11 00
-#define FOURTH(x) ((x & 3));       //3   = 00 00 00 11
 
 //Errors.c
-int my_error(ERRORS err_code);
+int my_error(ERRORS err_code, char *str);
 
 // Init.c
-void init_vm(t_vm *machine, t_champion_array *champions, int dump_cycle);
+void init_vm(t_vm *machine, t_champion_array *champions);
 t_champion *set_last_alive(t_vm *machine);
 
 // print_memory.c
 void print_memory(t_vm *machine, char flag);
 
 //validate_args.c
-int parse_champions(t_champion_array *champions, int ac, char **av);
+int parse_champions(t_vm *machine, t_champion_array *champions, char **av);
 
 // game.c
 int play(t_vm *machine);
