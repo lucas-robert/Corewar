@@ -3,11 +3,11 @@
 t_champion* get_champion_by_id(t_vm *machine, int champion_id)
 {
 	int i = 0;
-	while (i < machine->champions->size)
+	while (i < machine->champions.size)
 	{
-		if (machine->champions->array[i].id == -champion_id)
+		if (machine->champions.array[i].id == -champion_id)
 		{
-			return &machine->champions->array[i];
+			return &machine->champions.array[i];
 		}
 		else
 			i++;

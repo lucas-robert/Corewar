@@ -20,17 +20,15 @@ void delete_vm(t_vm *machine)
 
 int main(int ac, char **av)
 {
-	t_champion_array champions;
 	t_vm machine;
 
 	if (ac == 1)
 		return(my_error(NO_INPUT_FILE, NULL));
 
-	if (parse_champions(&machine, &champions, av) == EXIT_FAILURE)
+	if (parse_champions(&machine, av) == EXIT_FAILURE)
 		return EXIT_FAILURE;
 
-	init_vm(&machine, &champions);
-	speaker(&champions);
+	speaker(&machine.champions);
 	if (!play(&machine))
 	{
 		print_results(&machine);

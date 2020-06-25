@@ -1,13 +1,12 @@
 #include <corewar2.h>
 
-int parse_champions(t_vm *machine, t_champion_array *champions, char **av)
+int parse_champions(t_vm *machine, char **av)
 {
+
 	int index = 1;
 	int next_n = 0;
 	int champion_id = 0;
-
-	machine->dump_cycle = -1;
-	machine->verbosity = 0;
+	init_vm(machine);
 
 	while(av[index])
 	{
@@ -22,15 +21,18 @@ int parse_champions(t_vm *machine, t_champion_array *champions, char **av)
 			{
 				return (my_error(TOO_MUCH_CHAMPIONS, NULL));
 			}
-			champions->array[champion_id].filename = av[index];
-			champions->array[champion_id].id = next_n - 1;
+			machine->champions.array[champion_id].filename = av[index];
+			machine->champions.array[champion_id].id = next_n - 1;
 			next_n = 0;
 			champion_id++;
 		}
 		index++;
 	}
-	champions->size = champion_id;
-	if (read_champions(champions) > 0)
+	machine->champions.size = champion_id;
+	if (read_champions(&machine->champions) > 0)
 		return EXIT_FAILURE;
+
+	place_champions(machine);
+	machine->last_alive = set_last_alive(machine);
 	return EXIT_SUCCESS;
 }

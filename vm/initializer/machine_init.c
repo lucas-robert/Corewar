@@ -37,18 +37,18 @@ void init_process(t_vm *machine, int position, int id)
 	return ;
 }
 
-void place_champions(t_vm *machine, t_champion_array *champions)
+void place_champions(t_vm *machine)
 {
-	int padding = MEM_SIZE / champions->size;
-	for (int i = 0; i < champions->size; i++)
+	int padding = MEM_SIZE / machine->champions.size;
+	for (int i = 0; i < machine->champions.size; i++)
 	{
-		my_memcpy(&machine->battlefield[padding * i], champions->array[i].code, PROCESS_MAX_SIZE);
+		my_memcpy(&machine->battlefield[padding * i], machine->champions.array[i].code, PROCESS_MAX_SIZE);
 		init_process(machine, (padding * i), i + 1);
 	}
 	return ;
 }
 
-void init_vm(t_vm *machine, t_champion_array *champions)
+void init_vm(t_vm *machine)
 {
 	machine->cycle_to_die = CYCLE_TO_DIE;
 	machine->nb_check = 0;
@@ -56,8 +56,8 @@ void init_vm(t_vm *machine, t_champion_array *champions)
 	machine->nb_alive = 0;
 	machine->last_check = 0;
 	machine->process_stack = NULL;
-	machine->champions = champions;
+	machine->dump_cycle = -1;
+	machine->verbosity = 0;
+	machine->gui = NULL;
 	my_memset(machine->battlefield, 0 , MEM_SIZE + 1);
-	place_champions(machine, champions);
-	machine->last_alive = set_last_alive(machine);
 }

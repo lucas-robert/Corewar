@@ -35,6 +35,7 @@ INCLUDES_LIB = -I ./src/includes
 LIB = ./src/lib.a
 SANITIZE = -fsanitize=address -Wall -Wextra -Werror
 CLAFGS = -Wall -Wextra -Werror
+GUI = -lncurses
 
 
 all: $(NAME)
@@ -42,12 +43,12 @@ all: $(NAME)
 $(NAME) : $(OBJECT_MY_VM)
 	make -C ./src
 	@echo "\033[0;32m[LIB COMPILED]\033[0;0m"
-	@gcc -o $(NAME) $(SANITIZE) $(CFLAGS) $(OBJECT_MY_VM) $(LIB)
+	@gcc -o $(NAME) $(SANITIZE) $(CFLAGS) $(OBJECT_MY_VM) $(LIB) $(GUI)
 	# @gcc -o $(NAME) $(OBJECT_MY_VM) $(LIB)
 	@echo "\033[0;32m[COREWAR COMPILED]\033[0;0m"
 
 %.o: %.c includes/*.h
-	gcc -g -o $@ -c $< $(INCLUDES_MY_VM) $(SANITIZE) $(CFLAGS) $(INCLUDES_LIB)
+	gcc -g -o $@ -c $< $(INCLUDES_MY_VM) $(SANITIZE) $(CFLAGS) $(INCLUDES_LIB) 
 
 clean:
 	make -C ./src clean

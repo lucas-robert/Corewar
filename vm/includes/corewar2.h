@@ -1,6 +1,7 @@
 #ifndef _COREWAR_H_
 # define _COREWAR_H_
 
+#include <ncurses.h>
 #include <my_lib.h>
 
 # define MEM_SIZE                (4 * 1024)
@@ -144,6 +145,13 @@ typedef struct s_process
 	int next_op;
 } t_process;
 
+// 0 -> main window, 1-> Legend
+typedef struct s_gui
+{
+	int base_x;
+	int base_y;
+	WINDOW *w;
+} t_gui;
 /*
 ** live
 */
@@ -166,8 +174,9 @@ typedef struct s_vm {
 	int nb_alive;
 	unsigned char battlefield[MEM_SIZE + 1];
 	t_champion *last_alive;
-	t_champion_array *champions;
+	t_champion_array champions;
 	t_node *process_stack;
+	t_gui gui[2];
 
 } t_vm;
 
@@ -176,8 +185,8 @@ typedef struct s_vm {
 **  Parser
 */
 
-// validate_args.case
-int parse_champions(t_vm *machine, t_champion_array *champions, char **av);
+// validate_args.c
+int parse_champions(t_vm *machine, char **av);
 
 //options.c
 int handle_option(char **av, t_vm *machine, int *index, int *next_n);
@@ -190,7 +199,8 @@ int handle_option(char **av, t_vm *machine, int *index, int *next_n);
 int read_champions(t_champion_array *champions);
 
 // machine_init.c
-void init_vm(t_vm *machine, t_champion_array *champions);
+void place_champions(t_vm *machine);
+void init_vm(t_vm *machine);
 t_champion *set_last_alive(t_vm *machine);
 
 /*
@@ -249,7 +259,6 @@ void my_lld(t_vm *machine, t_process *process, const cw_t *operation);
 void my_lldi(t_vm *machine, t_process *process, const cw_t *operation);
 void my_lfork(t_vm *machine, t_process *process, const cw_t *operation);
 void my_aff(t_vm *machine, t_process *process, const cw_t *operation);
-
 
 //Operations helpers
 int is_acb_valid(args_type_t acb, args_type_t op);

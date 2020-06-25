@@ -59,6 +59,10 @@ int handle_option(char **av, t_vm *machine, int *index, int *next_n)
 			return my_error(WRONG_VERBOSE, NULL);
 		}
 	}
+	else if (my_strcmp(av[*index], "-g") == 0)
+	{
+		init_gui(machine);
+	}
 	else
 	{
 		return (my_error(ERR_ARG, av[*index]));
