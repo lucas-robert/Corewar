@@ -31,6 +31,8 @@ void unset_core_gui_continue(t_vm *machine, int pc, int champion_id)
 	t_coords location;
 	int size = get_op_size(machine, ring(pc));
 	chtype byte;
+
+	attron(A_NORMAL);
 	for (int i = 0; i < size + 1; i++)
 	{
 		get_position(ring(pc), &location);
@@ -45,6 +47,7 @@ void unset_core_gui_continue(t_vm *machine, int pc, int champion_id)
 		}
 		pc++;
 	}
+	attroff(A_NORMAL);
 	// refresh();
 }
 

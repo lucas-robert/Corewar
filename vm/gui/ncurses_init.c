@@ -1,20 +1,5 @@
 #include <corewar2.h>
 
-// Champion 1 code
-// Champion 2 code
-// Champion 3 code
-// Champion 4 code
-
-// Champion 1 pc
-// Champion 2 pc
-// Champion 3 pc
-// Champion 4 pc
-
-// Champion 1 code_exec
-// Champion 2 code_exec
-// Champion 3 code_exec
-// Champion 4 code_exec
-
 void init_ncurses_battlefield(t_vm *machine)
 {
 	for (int line = 0; line < MEM_SIZE / BYTES_PER_LINE; line++)
@@ -63,7 +48,7 @@ void init_color_pairs()
 	init_pair(40, COLOR_CYAN, COLOR_MAGENTA); // PC
 	init_pair(41, COLOR_WHITE, COLOR_MAGENTA); // NEXT_CODE_TO_EXEC
 
-	attron(A_BOLD);
+	attron(A_DIM); //Set all prints to a bit dimmer
 }
 
 void init_windows(t_vm *machine)
