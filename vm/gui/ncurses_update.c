@@ -4,12 +4,12 @@
 void unset_core_gui(t_vm *machine, int pc, int champion_id)
 {
 	t_coords location;
-	int size = get_op_size(machine, pc);
+	int size = get_op_size(machine, ring(pc));
 	chtype byte;
 	attron(COLOR_PAIR((champion_id)));
 	for (int i = 0; i < size + 1; i++)
 	{
-		get_position(pc, &location);
+		get_position(ring(pc), &location);
 		for (int y = 0; y < 3; y++)
 		{
 			byte = mvinch(location.y, location.x);
@@ -22,7 +22,30 @@ void unset_core_gui(t_vm *machine, int pc, int champion_id)
 		pc++;
 	}
 	attroff(COLOR_PAIR((champion_id)));
-	refresh();
+	// refresh();
+}
+
+void unset_core_gui_continue(t_vm *machine, int pc, int champion_id)
+{
+	//Don't set the attribute
+	t_coords location;
+	int size = get_op_size(machine, ring(pc));
+	chtype byte;
+	for (int i = 0; i < size + 1; i++)
+	{
+		get_position(ring(pc), &location);
+		for (int y = 0; y < 3; y++)
+		{
+			byte = mvinch(location.y, location.x);
+			if (((byte & A_COLOR) == COLOR_PAIR(champion_id * 10)) || ((byte & A_COLOR) == COLOR_PAIR(champion_id * 10 + 1)))
+			{
+				mvaddch(location.y, location.x, byte & A_CHARTEXT);
+			}
+			location.x++;
+		}
+		pc++;
+	}
+	// refresh();
 }
 
 void update_core_gui(t_vm *machine, int pc, int champion_id)
@@ -52,6 +75,21 @@ void update_core_gui(t_vm *machine, int pc, int champion_id)
 	}
 	attroff(COLOR_PAIR(champion_id * 10 + 1));
 	// wrefresh(machine->core);
-	// sleep(2);
 	refresh();
+}
+
+void handle_gui(t_vm *machine, t_process *process)
+{
+	if (machine->gui)
+	{
+		if (process->next_op == CONTINUE)
+		{
+			unset_core_gui_continue(machine, ring(process->pc - 1), process->champion_id);
+		}
+		else
+		{
+			unset_core_gui(machine, process->pc, process->champion_id);
+		}
+	}
+	return;
 }

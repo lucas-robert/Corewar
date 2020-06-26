@@ -59,10 +59,7 @@ void execute_process(t_vm *machine, t_process *process)
 	}
 	else
 	{
-		if (machine->gui)
-		{
-			unset_core_gui(machine, process->pc, process->champion_id);
-		}
+		handle_gui(machine, process);
 		if (is_op_valid(process->next_op))
 		{
 			(*operations[process->next_op])(machine, process, &cw_tab[process->next_op]);

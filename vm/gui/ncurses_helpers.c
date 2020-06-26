@@ -49,7 +49,7 @@ int get_op_size(t_vm *machine, int pc)
 	else
 	{
 		unsigned char acb = machine->battlefield[ring(pc + 1)];
-		for (int i = 0; i < cw_tab[opcode].num_args; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			unsigned char type = (acb >> (2 * (3 - i)) & 3);
 			if (type == REG_CODE)

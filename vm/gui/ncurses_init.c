@@ -45,22 +45,22 @@ void init_color_pairs()
 	init_pair(0, COLOR_WHITE, COLOR_BLACK);
 	//CHAMP 1
 	init_pair(1, COLOR_RED, COLOR_BLACK); // CODE
-	init_pair(10, COLOR_BLACK, COLOR_RED); // PC
+	init_pair(10, COLOR_CYAN, COLOR_RED); // PC
 	init_pair(11, COLOR_WHITE, COLOR_RED); // NEXT_CODE_TO_EXEC
 
 	//CHAMP 2
 	init_pair(2, COLOR_BLUE, COLOR_BLACK); // CODE
-	init_pair(20, COLOR_BLACK, COLOR_BLUE); // PC
+	init_pair(20, COLOR_CYAN, COLOR_BLUE); // PC
 	init_pair(21, COLOR_WHITE, COLOR_BLUE); // NEXT_CODE_TO_EXEC
 
 	//CHAMP 3
 	init_pair(3, COLOR_GREEN, COLOR_BLACK); // CODE
-	init_pair(30, COLOR_BLACK, COLOR_GREEN); // PC
+	init_pair(30, COLOR_CYAN, COLOR_GREEN); // PC
 	init_pair(31, COLOR_WHITE, COLOR_GREEN); // NEXT_CODE_TO_EXEC
 
 	// CHAMP 4
 	init_pair(4, COLOR_MAGENTA, COLOR_BLACK); // CODE
-	init_pair(40, COLOR_BLACK, COLOR_MAGENTA); // PC
+	init_pair(40, COLOR_CYAN, COLOR_MAGENTA); // PC
 	init_pair(41, COLOR_WHITE, COLOR_MAGENTA); // NEXT_CODE_TO_EXEC
 
 	attron(A_BOLD);

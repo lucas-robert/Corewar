@@ -1,7 +1,5 @@
 #include <corewar2.h>
 
-static const char *COLOR_TABLE[] = {RED, GREEN, YELLOW, BLUE};
-
 void swap(t_champion *a, t_champion *b)
 {
 	t_champion tmp;
@@ -53,7 +51,6 @@ int get_champion_data(t_champion *champion, int fd)
 	my_memset(champion->code, 0, PROCESS_MAX_SIZE + 1);
 	my_memcpy(champion->code, &buffer[runner], champion->exec_code_size);
 
-	champion->color = COLOR_TABLE[champion->id - 1];
 	champion->last_live = 0;
 
 	return EXIT_SUCCESS;

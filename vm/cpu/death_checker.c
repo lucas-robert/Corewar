@@ -64,7 +64,6 @@ int death_checker(t_vm *machine)
 		check_alive_processes(machine);
 		if (find_winner(machine))
 		{
-			print_memory(machine, 0);
 			return 1;
 		}
 	}

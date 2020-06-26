@@ -3,6 +3,7 @@
 
 #include <ncurses.h>
 #include <my_lib.h>
+#include <time.h>
 
 # define MEM_SIZE                (4 * 1024)
 # define IDX_MOD                 512
@@ -128,7 +129,6 @@ typedef enum e_error
 typedef struct s_champion{
 	int id;
 	char *filename;
-	const char *color;
 	char name[PROG_NAME_LENGTH + 1];
 	char comment[COMMENT_LENGTH + 1];
 	int exec_code_size;
@@ -251,7 +251,8 @@ int my_error(ERRORS err_code, char *str);
 # define MIN_ROW 210
 # define MIN_LINE 70
 # define LEGEND_SIZE 40
-// # define BRIGHT_WHITE 15
+# define SLEEP_TIME 9000000 //nanoseconds
+
 // print_memory.c
 void print_memory(t_vm *machine, char flag);
 
@@ -272,6 +273,10 @@ int has_acb(int opcode);
 //ncurses_update.c
 void update_core_gui(t_vm *machine, int pc, int champion_id);
 void unset_core_gui(t_vm *machine, int pc, int champion_id);
+void unset_core_gui_continue(t_vm *machine, int pc, int champion_id);
+void handle_gui(t_vm *machine, t_process *process);
+
+
 /*
 **  Operations
 */

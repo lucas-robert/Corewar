@@ -1,5 +1,12 @@
 #include <corewar2.h>
 
+void reduce_speed()
+{
+
+	const struct timespec sleeper = {0, SLEEP_TIME};
+	nanosleep(&sleeper, NULL);
+}
+
 int play(t_vm *machine)
 {
 	while(1)
@@ -15,21 +22,22 @@ int play(t_vm *machine)
 		}
 		if (machine->current_cycle == machine->dump_cycle)
 		{
-			printf("Cycle to die: %d\n", machine->cycle_to_die);
-			print_list(&machine->process_stack);
-			print_memory(machine, 1);
+			if (!machine->gui)
+				print_memory(machine, 1);
 			delete_list(&machine->process_stack);
 			return 1;
 		}
 		if (find_winner(machine))
 		{
-			printf("Found a winner!\n");
-			print_memory(machine, 0);
 			return 0;
 		}
 		if (death_checker(machine))
 			return 0;
-			
+
+		if (machine->gui)
+		{
+			reduce_speed();
+		}
 		machine->current_cycle += 1;
 	}
 }
