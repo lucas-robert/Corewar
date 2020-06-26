@@ -38,12 +38,13 @@ int size_without_acb(int opcode)
 	}
 }
 
-int get_op_size(t_vm *machine, int pc, int opcode)
+int get_op_size(t_vm *machine, int pc)
 {
-	int res = 2; // PC + ACB
+	int res = 0; // PC + ACB
+	int opcode = machine->battlefield[pc];
 	if (!has_acb(opcode))
 	{
-		return (1 + size_without_acb(opcode));
+		return (size_without_acb(opcode));
 	}
 	else
 	{

@@ -265,13 +265,13 @@ void ncurses_place_champion(WINDOW* core, unsigned char *champion_code, int pc, 
 
 // ncurses_helpers.c
 void get_position(int pc, t_coords *location);
-int get_op_size(t_vm *machine, int pc, int opcode);
+int get_op_size(t_vm *machine, int pc);
 int get_dir_size(int opcode);
 int has_acb(int opcode);
 
 //ncurses_update.c
-void update_core_gui(t_vm *machine, int pc, int opcode, int champion_id);
-void unset_core_gui(t_vm *machine, int pc, int opcode, int champion_id);
+void update_core_gui(t_vm *machine, int pc, int champion_id);
+void unset_core_gui(t_vm *machine, int pc, int champion_id);
 /*
 **  Operations
 */
