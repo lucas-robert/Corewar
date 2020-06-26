@@ -9,7 +9,8 @@ SRC =	main.c \
 		cpu/op.c \
 		errors/errors.c \
 		gui/ncurses_helpers.c \
-		gui/ncurses_update.c \
+		gui/ncurses_legend.c \
+		gui/ncurses_update_core.c \
 		gui/ncurses_init.c \
 		gui/print_memory.c \
 		gui/results.c \

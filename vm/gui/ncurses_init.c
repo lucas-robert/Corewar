@@ -1,5 +1,17 @@
 #include <corewar2.h>
 
+static const char *header_text[] = {" _____  _____ ______  _____  _    _   ___  ______ ","/  __ \\|  _  || ___ \\|  ___|| |  | | / _ \\ | ___ \\","| /  \\/| | | || |_/ /| |__  | |  | |/ /_\\ \\| |_/ /","| |    | | | ||    / |  __| | |/\\| ||  _  ||    / ","| \\__/\\ \\_/ /| |\\ \\ | |___ \\  /\\  /| | | || |\\ \\ "," \\____/ \\___/ \\_| \\_|\\____/  \\/  \\/ \\_| |_/\\_| \\_|", 0};
+
+void set_header(t_vm *machine)
+{
+	wattron(machine->gui->header_w, A_BOLD);
+	for (int i = 0; header_text[i]; i++)
+	{
+		mvwaddstr(machine->gui->header_w, i + 1,74, header_text[i]);
+	}
+
+}
+
 void init_ncurses_battlefield(t_vm *machine)
 {
 	for (int line = 0; line < MEM_SIZE / BYTES_PER_LINE; line++)
@@ -7,21 +19,21 @@ void init_ncurses_battlefield(t_vm *machine)
 		attron(COLOR_PAIR(0));
 		char address[ADDRESS_INDICATOR];
 		sprintf(address, "0x%.4x : ", line * BYTES_PER_LINE);
-		// waddstr(machine->core, address);
-		addstr(address);
+		waddstr(machine->gui->core_w, address);
+		// addstr(address);
 		for (int row = 0; row < BYTES_PER_LINE; row ++)
 		{
 			char bytes[4];
 			sprintf(bytes, "%.2x ", machine->battlefield[line * BYTES_PER_LINE + row]);
-			// waddstr(machine->core, bytes);
-			addstr(bytes);
+			waddstr(machine->gui->core_w, bytes);
+			// addstr(bytes);
 		}
-		addstr("\n");
-		// waddstr(machine->core, "\n");
+		// addstr("\n");
+		waddstr(machine->gui->core_w, "\n");
 	}
-	// wrefresh(machine->core);
+	wrefresh(machine->gui->core_w);
 	attroff(COLOR_PAIR(0));
-	refresh();
+	// refresh();
 	return;
 }
 
@@ -48,24 +60,31 @@ void init_color_pairs()
 	init_pair(40, COLOR_CYAN, COLOR_MAGENTA); // PC
 	init_pair(41, COLOR_WHITE, COLOR_MAGENTA); // NEXT_CODE_TO_EXEC
 
-	attron(A_DIM); //Set all prints to a bit dimmer
+
 }
 
 void init_windows(t_vm *machine)
 {
 	int parent_x;
 	int parent_y;
-
 	getmaxyx(stdscr, parent_y, parent_x);
-	machine->core = newwin(parent_y, parent_x - LEGEND_SIZE, 0, 0);
-	machine->legend = newwin(parent_y, LEGEND_SIZE, 0, parent_x - LEGEND_SIZE);
-	// draw to our windows
-	// mvwprintw(arena, 0, 0, "Arena");
-	// mvwprintw(legend, 0, 0, "legend");
-	wborder(machine->core, '|', '|', '-', '-', '+', '+', '+', '+');
-	wborder(machine->legend, '|', '|', '-', '-', '+', '+', '+', '+');
-	wrefresh(machine->core);
-	wrefresh(machine->legend);
+
+	machine->gui = malloc(sizeof(t_gui));
+
+	machine->gui->header_w = newwin(HEADER_SIZE, parent_x, 0, 0);
+	machine->gui->core_w = newwin(parent_y, CORE_SIZE, HEADER_SIZE, 0);
+	machine->gui->legend_w = newwin(parent_y, parent_x - CORE_SIZE, 0, CORE_SIZE);
+
+	box(machine->gui->header_w, 0, 0);
+	box(machine->gui->legend_w, 0, 0);
+	set_header(machine);
+
+	wattron(machine->gui->core_w, A_DIM);
+	wattron(machine->gui->legend_w, A_DIM); //Set all prints to a bit dimmer
+
+	wrefresh(machine->gui->header_w);
+	wrefresh(machine->gui->core_w);
+	wrefresh(machine->gui->legend_w);
 }
 
 void init_gui(t_vm *machine)
@@ -78,39 +97,28 @@ void init_gui(t_vm *machine)
     	printf("Your terminal does not support color\n");
 		return;
 	}
-	// if (COLS < MIN_ROW || LINES < MIN_LINE)
-	// {
-	// 	machine->gui = 0;
-	// 	endwin();
-    // 	printf("We recommend a minimum terminal size of %d x %d\n", MIN_ROW, MIN_LINE);
-	// 	return;
-	// }
+
 	curs_set(FALSE);
-	// init_windows(machine);
+	init_windows(machine);
 	noecho();
-	// wborder(stdscr, '|', '|', '-', '-', '+', '+', '+', '+');
 	start_color();
 	init_color_pairs();
 	init_ncurses_battlefield(machine);
-	refresh();
 }
 
-void ncurses_place_champion(WINDOW* core, unsigned char *champion_code, int pc, int champion_number, int exec_code_size)
+void ncurses_place_champion(t_vm *machine, int position, int id)
 {
 	// Set attribute
 	t_coords location;
-	(void)core;
-	attron(COLOR_PAIR(champion_number)); // Set the code in the defined color
-	for (int i = 0; i < exec_code_size; i++)
+	wattron(machine->gui->core_w, COLOR_PAIR(id)); // Set the code in the defined color
+	for (int i = 0; i < machine->champions.array[id - 1].exec_code_size; i++)
 	{
-		get_position(pc, &location);
+		get_position(position, &location);
 		char bytes[4];
-		sprintf(bytes, "%.2x ", champion_code[i]);
-		// mvwaddstr(core, location.y, location.x, bytes);
-		mvaddstr(location.y, location.x, bytes);
-		pc = ring(pc + 1);
+		sprintf(bytes, "%.2x ", machine->champions.array[id - 1].code[i]);
+		mvwaddstr(machine->gui->core_w, location.y , location.x , bytes);
+		position = ring(position + 1);
 	}
-	attroff(COLOR_PAIR(champion_number));
-	refresh();
-	// wrefresh(core);
+	wattroff(machine->gui->core_w, COLOR_PAIR(id));
+	wrefresh(machine->gui->core_w);
 }

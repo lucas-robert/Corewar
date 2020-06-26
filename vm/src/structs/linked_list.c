@@ -66,6 +66,7 @@ void delete_node(t_node **head, void *data)
 
     if (tmp && tmp->data == data){
         *head = tmp->next;
+		free(tmp->data);
         free(tmp);
         return;
     }

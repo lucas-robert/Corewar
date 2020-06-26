@@ -23,7 +23,7 @@ int play(t_vm *machine)
 		if (machine->current_cycle == machine->dump_cycle)
 		{
 			if (!machine->gui)
-				print_memory(machine, 1);
+				print_memory(machine);
 			delete_list(&machine->process_stack);
 			return 1;
 		}
@@ -36,6 +36,7 @@ int play(t_vm *machine)
 
 		if (machine->gui)
 		{
+			gui_legend(machine);
 			reduce_speed();
 		}
 		machine->current_cycle += 1;

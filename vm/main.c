@@ -16,9 +16,12 @@ void delete_vm(t_vm *machine)
 {
 	getch();
 	if (machine->gui)
-		delwin(machine->core);
-		delwin(machine->legend);
+	{
+		delwin(machine->gui->core_w);
+		delwin(machine->gui->legend_w);
 		endwin();
+		free(machine->gui);
+	}
 	machine = NULL;
 	return;
 }
@@ -38,7 +41,6 @@ int main(int ac, char **av)
 	{
 		print_results(&machine);
 	}
-
 	delete_vm(&machine);
 	return EXIT_SUCCESS;
 }

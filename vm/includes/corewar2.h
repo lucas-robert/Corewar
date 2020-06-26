@@ -66,6 +66,11 @@ typedef struct op_s     op_t;
 # define DIR_CODE          2
 # define IND_CODE          3
 
+# define CYCLE_TO_DIE    1536
+# define CYCLE_DELTA     50
+# define NBR_LIVE        21
+# define MAX_CHECKS      10
+
 /*
 ** cw_tab
 */
@@ -80,26 +85,13 @@ typedef struct op_s     op_t;
 # define COREWAR_EXEC_MAGIC      0xea83f3
 # define NULL_SEPARATOR_SIZE     4
 
-#define RED "\x1b[31m"
-#define GREEN "\x1b[32m"
-#define YELLOW "\x1b[33m"
-#define BLUE "\x1b[34m"
-#define MAGENTA "\x1b[35m"
-#define CYAN "\x1b[1;36m"
-#define RESET "\x1b[0m"
-
-# define VERBOSE_LIVE 1
-# define VERBOSE_CYCLE 2
-# define VERBOSE_OP 4
-
-
 extern const cw_t cw_tab[18];
 
 
 typedef struct s_coords
 {
-	int x;
 	int y;
+	int x;
 } t_coords;
 
 typedef struct header_s
@@ -110,7 +102,6 @@ typedef struct header_s
    char comment[COMMENT_LENGTH + 1];
 } header_t;
 
-# define HEX_BASE 16
 typedef enum e_error
 {
 	NO_INPUT_FILE,
@@ -159,14 +150,19 @@ typedef struct s_process
 /*
 ** live
 */
-# define CYCLE_TO_DIE    1536
-# define CYCLE_DELTA     50
-# define NBR_LIVE        21
-# define MAX_CHECKS      10
-# define BYTES_PER_LINE  64
 
+# define BYTES_PER_LINE  64
 # define STARTING_CHAMPION_NUMBER 1
 
+typedef struct s_gui
+{
+	t_coords core_c;
+	WINDOW *core_w;
+	t_coords legend_c;
+	WINDOW *legend_w;
+	t_coords header_c;
+	WINDOW *header_w;
+} t_gui;
 
 typedef struct s_vm {
 	int verbosity;
@@ -180,12 +176,14 @@ typedef struct s_vm {
 	t_champion *last_alive;
 	t_champion_array champions;
 	t_node *process_stack;
-	int gui;
-	WINDOW *core;
-	WINDOW *legend;
-
+	t_gui *gui;
 } t_vm;
 
+
+//Verbose modes
+# define VERBOSE_LIVE 1
+# define VERBOSE_CYCLE 2
+# define VERBOSE_OP 4
 
 /*
 **  Parser
@@ -250,11 +248,12 @@ int my_error(ERRORS err_code, char *str);
 # define ADDRESS_INDICATOR 10
 # define MIN_ROW 210
 # define MIN_LINE 70
-# define LEGEND_SIZE 40
-# define SLEEP_TIME 9000000 //nanoseconds
+# define CORE_SIZE (BYTES_PER_LINE * 3) + ADDRESS_INDICATOR + 2
+# define HEADER_SIZE 8
+# define SLEEP_TIME 900000 //nanoseconds
 
 // print_memory.c
-void print_memory(t_vm *machine, char flag);
+void print_memory(t_vm *machine);
 
 // results.c
 void print_results(t_vm *machine);
@@ -262,7 +261,7 @@ void print_results(t_vm *machine);
 // ncurses_init.c
 void init_gui(t_vm *machine);
 void init_ncurses_battlefield(t_vm *machine);
-void ncurses_place_champion(WINDOW* core, unsigned char *champion_code, int pc, int champion_number, int exec_code_size);
+void ncurses_place_champion(t_vm *machine, int position, int id);
 
 // ncurses_helpers.c
 void get_position(int pc, t_coords *location);
@@ -270,18 +269,20 @@ int get_op_size(t_vm *machine, int pc);
 int get_dir_size(int opcode);
 int has_acb(int opcode);
 
-//ncurses_update.c
+//ncurses_update_core.c
 void update_core_gui(t_vm *machine, int pc, int champion_id);
 void unset_core_gui(t_vm *machine, int pc, int champion_id);
 void unset_core_gui_continue(t_vm *machine, int pc, int champion_id);
 void handle_gui(t_vm *machine, t_process *process);
 
+//ncurses_legend.c
+void gui_legend(t_vm *machine);
 
 /*
 **  Operations
 */
 
-#define CONTINUE -2
+#define CONTINUE -2 //Increment the pc without operating anything
 
 void my_live(t_vm *machine, t_process *process, const cw_t *operation);
 void my_ld(t_vm *machine, t_process *process, const cw_t *operation);

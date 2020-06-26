@@ -9,7 +9,7 @@ int get_next_n(char **av, int *index)
 	}
 	else
 	{
-		return 0;
+		return -1;
 	}
 }
 
@@ -22,7 +22,7 @@ int get_dump_cycle(char **av, int *index)
 	}
 	else
 	{
-		return 0;
+		return -1;
 	}
 
 }
@@ -36,7 +36,7 @@ int get_verbosity(char **av, int *index)
 	}
 	else
 	{
-		return 0;
+		return -1;
 	}
 }
 
@@ -60,7 +60,10 @@ int handle_option(char **av, t_vm *machine, int *index, int *next_n)
 	}
 	else if (my_strcmp(av[*index], "-v") == 0)
 	{
-		machine->verbosity = get_verbosity(av, index);
+		if (!machine->gui)
+		{
+			machine->verbosity = get_verbosity(av, index);
+		}
 		if (machine->verbosity < 0)
 		{
 			return my_error(WRONG_VERBOSE, NULL);
@@ -68,7 +71,8 @@ int handle_option(char **av, t_vm *machine, int *index, int *next_n)
 	}
 	else if (my_strcmp(av[*index], "-g") == 0)
 	{
-		machine->gui = 1;
+		init_gui(machine);
+		machine->verbosity = 0;
 	}
 	else
 	{
