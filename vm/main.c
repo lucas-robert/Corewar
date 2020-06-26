@@ -1,21 +1,24 @@
 #include <corewar2.h>
 
-void speaker(t_champion_array *champions)
+void speaker(t_vm *machine)
 {
-	printf("Ladies and gentlemen, welcome to the Arena!\n");
-	printf("Let me introduce today's players!\n");
-	for (int i = 0; i < champions->size; i++)
+	if (!machine->gui)
 	{
-		printf("Player %d : %s (%s), weighting [%d] bytes!\n", i + 1, champions->array[i].name,champions->array[i].comment, champions->array[i].exec_code_size);
+		printf("Ladies and gentlemen, welcome to the Arena!\n");
+		printf("Let me introduce today's players!\n");
+		for (int i = 0; i < machine->champions.size; i++)
+		{
+			printf("Player %d : %s (%s), weighting [%d] bytes!\n", i + 1, machine->champions.array[i].name, machine->champions.array[i].comment, machine->champions.array[i].exec_code_size);
+		}
 	}
 }
-
-
 void delete_vm(t_vm *machine)
 {
+	getch();
 	if (machine->gui)
+		delwin(machine->core);
+		delwin(machine->legend);
 		endwin();
-	//Todo: Free vm
 	machine = NULL;
 	return;
 }
@@ -30,7 +33,7 @@ int main(int ac, char **av)
 	if (parse_champions(&machine, av) == EXIT_FAILURE)
 		return EXIT_FAILURE;
 
-	speaker(&machine.champions);
+	speaker(&machine);
 	if (!play(&machine))
 	{
 		print_results(&machine);

@@ -44,9 +44,10 @@ void place_champions(t_vm *machine)
 		init_process(machine, (padding * i), i + 1);
 		if (machine->gui)
 		{
-			ncurses_place_champion(machine->champions.array[i].code, (padding * i), i);
+			ncurses_place_champion(machine->core, machine->champions.array[i].code, (padding * i), i + 1, machine->champions.array[i].exec_code_size);
 		}
 	}
+	// sleep(10);
 	return;
 }
 
@@ -61,5 +62,7 @@ void init_vm(t_vm *machine)
 	machine->dump_cycle = -1;
 	machine->verbosity = 0;
 	machine->gui = 0;
+	machine->core = 0;
+	machine->legend = 0;
 	my_memset(machine->battlefield, 0 , MEM_SIZE + 1);
 }

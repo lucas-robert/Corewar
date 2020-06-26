@@ -68,7 +68,7 @@ int handle_option(char **av, t_vm *machine, int *index, int *next_n)
 	}
 	else if (my_strcmp(av[*index], "-g") == 0)
 	{
-		init_gui(machine);
+		machine->gui = 1;
 	}
 	else
 	{

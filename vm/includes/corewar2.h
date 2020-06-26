@@ -180,8 +180,9 @@ typedef struct s_vm {
 	t_champion *last_alive;
 	t_champion_array champions;
 	t_node *process_stack;
-	// t_gui *gui;
 	int gui;
+	WINDOW *core;
+	WINDOW *legend;
 
 } t_vm;
 
@@ -247,7 +248,10 @@ int my_error(ERRORS err_code, char *str);
 **  GUI
 */
 # define ADDRESS_INDICATOR 10
-
+# define MIN_ROW 210
+# define MIN_LINE 70
+# define LEGEND_SIZE 40
+// # define BRIGHT_WHITE 15
 // print_memory.c
 void print_memory(t_vm *machine, char flag);
 
@@ -257,20 +261,17 @@ void print_results(t_vm *machine);
 // ncurses_init.c
 void init_gui(t_vm *machine);
 void init_ncurses_battlefield(t_vm *machine);
-void ncurses_place_champion(unsigned char *champion_code, int pc, int champion_number);
-
+void ncurses_place_champion(WINDOW* core, unsigned char *champion_code, int pc, int champion_number, int exec_code_size);
 
 // ncurses_helpers.c
-
 void get_position(int pc, t_coords *location);
 int get_op_size(t_vm *machine, int pc, int opcode);
 int get_dir_size(int opcode);
 int has_acb(int opcode);
 
 //ncurses_update.c
-void update_gui(t_vm *machine, int pc, int opcode, int champion_id);
-
-
+void update_core_gui(t_vm *machine, int pc, int opcode, int champion_id);
+void unset_core_gui(t_vm *machine, int pc, int opcode, int champion_id);
 /*
 **  Operations
 */

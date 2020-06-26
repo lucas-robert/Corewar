@@ -25,7 +25,6 @@ int find_winner(t_vm *machine)
 void check_alive_processes(t_vm *machine)
 {
 	t_node *check = machine->process_stack;
-	printf("Entering check alive: %d\n", stack_len(&machine->process_stack));
 
 	while (check)
 	{
@@ -53,9 +52,8 @@ void check_alive_processes(t_vm *machine)
 		machine->nb_check += 1;
 	}
 	machine->nb_alive = 0;
-	print_champions_last_live(machine);
+//	print_champions_last_live(machine);
 
-	printf("Exiting check alive: %d\n", stack_len(&machine->process_stack));
 }
 
 int death_checker(t_vm *machine)
@@ -63,10 +61,9 @@ int death_checker(t_vm *machine)
 	if ((machine->current_cycle && (machine->current_cycle == machine->last_check + machine->cycle_to_die)) || machine->cycle_to_die < 0)
 	{
 
-		printf("cycle_to_die is now %d at cycle %d\n", machine->cycle_to_die, machine->current_cycle);
+		check_alive_processes(machine);
 		if (find_winner(machine))
 		{
-			printf("Found a winner!\n");
 			print_memory(machine, 0);
 			return 1;
 		}

@@ -105,37 +105,37 @@ int main(int argc, char *argv[])
 {
 	int parent_x;
 	int parent_y;
-	int legend_size = 40;
+	int LEGEND_SIZE = 40;
 	initscr();
 	noecho();
 	curs_set(FALSE);
-	// get our maximum window dimensions
-	// getmaxyx(stdscr, parent_y, parent_x);
+	//get our maximum window dimensions
+	getmaxyx(stdscr, parent_y, parent_x);
 	// set up initial windows
-	// WINDOW *arena = newwin(parent_y, parent_x - legend_size, 0, 0);
-	// WINDOW *legend = newwin(parent_y, legend_size,0,  parent_x - legend_size);
-	// // draw to our windows
-	// mvwprintw(arena, 0, 0, "Arena");
-	// mvwprintw(legend, 0, 0, "legend");
-	// box(arena, '|', '-' );
-	// box(legend, '|', '-' );
-	addstr("8457913284759827345982734985 Salut les copains\n");
-	refresh();
-	sleep(3);
-	attron(A_BOLD | A_UNDERLINE | A_STANDOUT);
-	char prout[100];
-	sprintf(prout, "%2.x ", 155);
-	mvaddstr(0, 2, prout);
-	attroff(A_BOLD | A_UNDERLINE | A_STANDOUT);
-	refresh();
-	sleep(5);
-	// // refresh each window
-	// wrefresh(arena);
-	// wrefresh(legend);
+	WINDOW *arena = newwin(parent_y, parent_x - LEGEND_SIZE, 0, 0);
+	WINDOW *legend = newwin(parent_y, LEGEND_SIZE,0,  parent_x - LEGEND_SIZE);
+	// draw to our windows
+	mvwprintw(arena, 0, 0, "Arena");
+	mvwprintw(legend, 0, 0, "legend");
+	box(arena, '|', '-' );
+	box(legend, '|', '-' );
+	// addstr("8457913284759827345982734985 Salut les copains\n");
+	// refresh();
+	// sleep(3);
+	// attron(A_BOLD | A_UNDERLINE | A_STANDOUT);
+	// char prout[100];
+	// sprintf(prout, "%2.x ", 155);
+	// mvwaddstr(0, 2, prout);
+	// attroff(A_BOLD | A_UNDERLINE | A_STANDOUT);
+	// refresh();
 	// sleep(5);
+	// // refresh each window
+	wrefresh(arena);
+	wrefresh(legend);
+	sleep(5);
 	// clean up
-	// delwin(arena);
-	// delwin(legend);
+	delwin(arena);
+	delwin(legend);
 	endwin();
 	return 0;
 }

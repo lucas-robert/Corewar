@@ -35,6 +35,12 @@ int parse_champions(t_vm *machine, char **av)
 	{
 		return EXIT_FAILURE;
 	}
+
+	if (machine->gui)
+	{
+		init_gui(machine);
+		machine->verbosity = 0;
+	}
 	place_champions(machine);
 	machine->last_alive = set_last_alive(machine);
 	return EXIT_SUCCESS;

@@ -19,16 +19,35 @@ int get_dir_size(int opcode)
     return 4;
 }
 
+int size_without_acb(int opcode)
+{
+	switch (opcode)
+	{
+		case 1: //live
+			return 4;
+		case 9: //zjmp
+			return 2;
+		case 12: //fork
+			return 2;
+		case 15: //lfork
+			return 2;
+		case CONTINUE: //no_operation
+		case -1:
+		default:
+			return 1;
+	}
+}
+
 int get_op_size(t_vm *machine, int pc, int opcode)
 {
-	int res = 1;
+	int res = 2; // PC + ACB
 	if (!has_acb(opcode))
 	{
-		return 1;
+		return (1 + size_without_acb(opcode));
 	}
 	else
 	{
-		unsigned char acb = machine->battlefield[pc];
+		unsigned char acb = machine->battlefield[ring(pc + 1)];
 		for (int i = 0; i < cw_tab[opcode].num_args; i++)
 		{
 			unsigned char type = (acb >> (2 * (3 - i)) & 3);
@@ -51,6 +70,6 @@ int get_op_size(t_vm *machine, int pc, int opcode)
 
 void get_position(int pc, t_coords *location)
 {
-	location->y = (pc / BYTES_PER_LINE) + ADDRESS_INDICATOR;
-	location->x = pc % BYTES_PER_LINE;
+	location->x = (pc % BYTES_PER_LINE) * 3 + ADDRESS_INDICATOR - 1;
+	location->y = (pc / BYTES_PER_LINE);
 }

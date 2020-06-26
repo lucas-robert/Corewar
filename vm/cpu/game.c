@@ -27,9 +27,9 @@ int play(t_vm *machine)
 			print_memory(machine, 0);
 			return 0;
 		}
-
 		if (death_checker(machine))
 			return 0;
+			
 		machine->current_cycle += 1;
 	}
 }

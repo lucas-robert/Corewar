@@ -1,27 +1,52 @@
 #include <corewar2.h>
 
-void update_gui(t_vm *machine, int pc, int opcode, int champion_id)
+// Reset gui at last position
+void unset_core_gui(t_vm *machine, int pc, int opcode, int champion_id)
 {
 	t_coords location;
-	char byte[3];
+	int size = get_op_size(machine, pc, opcode);
+	chtype byte;
+	attron(COLOR_PAIR((champion_id)));
+	for (int i = 0; i < size; i++)
+	{
+		get_position(pc, &location);
+		byte = mvinch(location.y, location.x);
+		if (((byte & A_COLOR) == COLOR_PAIR(champion_id * 10)) || ((byte & A_COLOR) == COLOR_PAIR(champion_id * 10 + 1)))
+		{
+			mvaddch(location.y, location.x, byte);
+		}
+	}
+	attroff(COLOR_PAIR((champion_id)));
+	refresh();
+}
+
+void update_core_gui(t_vm *machine, int pc, int opcode, int champion_id)
+{
+	t_coords location;
+	char byte[4];
 	int size = get_op_size(machine, pc, opcode);
 
 	// Print pc
 	attron(COLOR_PAIR(champion_id * 10));
 	sprintf(byte, "%.2x ", machine->battlefield[pc]);
 	get_position(pc, &location);
+	// mvwaddstr(machine->core, location.y, location.x, byte);
 	mvaddstr(location.y, location.x, byte);
 	attroff(COLOR_PAIR((champion_id * 10)));
 	pc++;
 
 	//print next code to exec;
 	attron(COLOR_PAIR(champion_id * 10 + 1));
-	for (int i = 0; i < size; i++)
+	for (int i = 1; i < size; i++)
 	{
 		get_position(ring(pc), &location);
 		sprintf(byte, "%.2x ", machine->battlefield[ring(pc)]);
+		// mvwaddstr(machine->core, location.y, location.x, byte);
 		mvaddstr(location.y, location.x, byte);
 		pc++;
 	}
+	attroff(COLOR_PAIR(champion_id * 10 + 1));
+	// wrefresh(machine->core);
+	sleep(2);
 	refresh();
 }
