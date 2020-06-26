@@ -87,8 +87,19 @@ typedef struct op_s     op_t;
 #define CYAN "\x1b[1;36m"
 #define RESET "\x1b[0m"
 
+# define VERBOSE_LIVE 1
+# define VERBOSE_CYCLE 2
+# define VERBOSE_OP 4
+
 
 extern const cw_t cw_tab[18];
+
+
+typedef struct s_coords
+{
+	int x;
+	int y;
+} t_coords;
 
 typedef struct header_s
 {
@@ -145,13 +156,6 @@ typedef struct s_process
 	int next_op;
 } t_process;
 
-// 0 -> main window, 1-> Legend
-typedef struct s_gui
-{
-	int base_x;
-	int base_y;
-	WINDOW *w;
-} t_gui;
 /*
 ** live
 */
@@ -160,9 +164,9 @@ typedef struct s_gui
 # define NBR_LIVE        21
 # define MAX_CHECKS      10
 # define BYTES_PER_LINE  64
-# define PRINT_STEP      512
 
 # define STARTING_CHAMPION_NUMBER 1
+
 
 typedef struct s_vm {
 	int verbosity;
@@ -176,7 +180,8 @@ typedef struct s_vm {
 	t_champion *last_alive;
 	t_champion_array champions;
 	t_node *process_stack;
-	t_gui gui[2];
+	// t_gui *gui;
+	int gui;
 
 } t_vm;
 
@@ -207,10 +212,22 @@ t_champion *set_last_alive(t_vm *machine);
 **  CPU
 */
 
+//death_checker.c
+int find_winner(t_vm *machine);
+int death_checker(t_vm *machine);
+
+//game_helpers.c
+t_champion *get_champion_by_process(t_vm *machine, t_process *process);
+void print_champions_last_live(t_vm *machine);
+void print_list(t_node **head);
+
 // game.c
 int play(t_vm *machine);
-t_champion *get_champion_by_process(t_vm *machine, t_process *process);
+
+//process_execution.c
+void execute_process(t_vm *machine, t_process *current_process);
 void set_next_op(t_vm *machine, t_process *process);
+
 
 // memory_reader.c
 # define MODULO 1
@@ -229,12 +246,29 @@ int my_error(ERRORS err_code, char *str);
 /*
 **  GUI
 */
+# define ADDRESS_INDICATOR 10
 
 // print_memory.c
 void print_memory(t_vm *machine, char flag);
 
 // results.c
 void print_results(t_vm *machine);
+
+// ncurses_init.c
+void init_gui(t_vm *machine);
+void init_ncurses_battlefield(t_vm *machine);
+void ncurses_place_champion(unsigned char *champion_code, int pc, int champion_number);
+
+
+// ncurses_helpers.c
+
+void get_position(int pc, t_coords *location);
+int get_op_size(t_vm *machine, int pc, int opcode);
+int get_dir_size(int opcode);
+int has_acb(int opcode);
+
+//ncurses_update.c
+void update_gui(t_vm *machine, int pc, int opcode, int champion_id);
 
 
 /*

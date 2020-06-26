@@ -8,7 +8,9 @@ int get_next_n(char **av, int *index)
 		return (my_atoi(av[*index]));
 	}
 	else
+	{
 		return 0;
+	}
 }
 
 int get_dump_cycle(char **av, int *index)
@@ -19,7 +21,10 @@ int get_dump_cycle(char **av, int *index)
 		return (my_atoi(av[*index]));
 	}
 	else
+	{
 		return 0;
+	}
+
 }
 
 int get_verbosity(char **av, int *index)
@@ -30,7 +35,9 @@ int get_verbosity(char **av, int *index)
 		return (my_atoi(av[*index]));
 	}
 	else
+	{
 		return 0;
+	}
 }
 
 int handle_option(char **av, t_vm *machine, int *index, int *next_n)
@@ -54,7 +61,7 @@ int handle_option(char **av, t_vm *machine, int *index, int *next_n)
 	else if (my_strcmp(av[*index], "-v") == 0)
 	{
 		machine->verbosity = get_verbosity(av, index);
-		if (machine->verbosity < 0 || machine->verbosity > 4)
+		if (machine->verbosity < 0)
 		{
 			return my_error(WRONG_VERBOSE, NULL);
 		}

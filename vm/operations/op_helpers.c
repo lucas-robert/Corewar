@@ -18,7 +18,7 @@ void debug(int pc, unsigned char *battlefield)
 void operation_failed(t_process *process)
 {
 	process->cycle_till_exec = -1;
-	return ;
+	return;
 }
 
 void copy_registers(t_process *new_process, t_process *root)
@@ -27,7 +27,7 @@ void copy_registers(t_process *new_process, t_process *root)
 	{
 		new_process->registers[i] = root->registers[i];
 	}
-	return ;
+	return;
 }
 
 t_process *copy_process(t_vm *machine, t_process *root, int address)

@@ -15,6 +15,8 @@ void my_fork(t_vm *machine, t_process *process, const cw_t *operation)
 	push(&machine->process_stack, (void*)new_process);
 	set_next_op(machine, new_process);
 	process->pc = ring(process->pc + index);
-	if (machine->verbosity == 4)
+	if (machine->verbosity & VERBOSE_CYCLE)
+	{
 		printf("Process %d | %s %d\n", process->id, operation->mnemonique, address);
+	}
 }

@@ -5,7 +5,6 @@ t_champion *set_last_alive(t_vm *machine)
 	return (get_champion_by_process(machine, ((t_process *)((t_node*)get_last_in_stack(&machine->process_stack))->data)));
 }
 
-
 void init_registers(t_process *process, int player_id)
 {
 	process->registers[0] = 0; // Unused, as registers start from r1..r16
@@ -14,7 +13,7 @@ void init_registers(t_process *process, int player_id)
 	{
 		process->registers[i] = 0;
 	}
-	return ;
+	return;
 }
 
 void init_process(t_vm *machine, int position, int id)
@@ -32,9 +31,8 @@ void init_process(t_vm *machine, int position, int id)
 		new_process->last_live = 0;
 		init_registers(new_process, id);
 		push(&machine->process_stack, (void*)new_process);
-		printf("Process id : %d with champion_id %d\n", new_process->id, new_process->champion_id);
 	}
-	return ;
+	return;
 }
 
 void place_champions(t_vm *machine)
@@ -44,8 +42,12 @@ void place_champions(t_vm *machine)
 	{
 		my_memcpy(&machine->battlefield[padding * i], machine->champions.array[i].code, PROCESS_MAX_SIZE);
 		init_process(machine, (padding * i), i + 1);
+		if (machine->gui)
+		{
+			ncurses_place_champion(machine->champions.array[i].code, (padding * i), i);
+		}
 	}
-	return ;
+	return;
 }
 
 void init_vm(t_vm *machine)
@@ -58,6 +60,6 @@ void init_vm(t_vm *machine)
 	machine->process_stack = NULL;
 	machine->dump_cycle = -1;
 	machine->verbosity = 0;
-	machine->gui = NULL;
+	machine->gui = 0;
 	my_memset(machine->battlefield, 0 , MEM_SIZE + 1);
 }

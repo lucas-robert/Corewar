@@ -47,7 +47,9 @@ int my_error(ERRORS err_code, char *str)
 		fprintf(stderr,"Error: %s has an invalid code (too long). Max code size is %d\n", str, PROCESS_MAX_SIZE);
 	}
 	else
+	{
 		fprintf(stderr,"Undefined error\n");
-
+	}
+		
 	return 1;
 }

@@ -13,9 +13,11 @@ void speaker(t_champion_array *champions)
 
 void delete_vm(t_vm *machine)
 {
+	if (machine->gui)
+		endwin();
 	//Todo: Free vm
 	machine = NULL;
-	return ;
+	return;
 }
 
 int main(int ac, char **av)
@@ -33,6 +35,7 @@ int main(int ac, char **av)
 	{
 		print_results(&machine);
 	}
+
 	delete_vm(&machine);
 	return EXIT_SUCCESS;
 }

@@ -1,10 +1,16 @@
 NAME = corewar
 
 SRC =	main.c \
+		cpu/death_checker.c \
+		cpu/game_helpers.c \
 		cpu/game.c \
 		cpu/memory_reader.c \
+		cpu/process_execution.c \
 		cpu/op.c \
 		errors/errors.c \
+		gui/ncurses_helpers.c \
+		gui/ncurses_update.c \
+		gui/ncurses_init.c \
 		gui/print_memory.c \
 		gui/results.c \
 		initializer/champ_init.c \
@@ -48,7 +54,7 @@ $(NAME) : $(OBJECT_MY_VM)
 	@echo "\033[0;32m[COREWAR COMPILED]\033[0;0m"
 
 %.o: %.c includes/*.h
-	gcc -g -o $@ -c $< $(INCLUDES_MY_VM) $(SANITIZE) $(CFLAGS) $(INCLUDES_LIB) 
+	gcc -g -o $@ -c $< $(INCLUDES_MY_VM) $(SANITIZE) $(CFLAGS) $(INCLUDES_LIB)
 
 clean:
 	make -C ./src clean

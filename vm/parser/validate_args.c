@@ -2,7 +2,6 @@
 
 int parse_champions(t_vm *machine, char **av)
 {
-
 	int index = 1;
 	int next_n = 0;
 	int champion_id = 0;
@@ -13,7 +12,9 @@ int parse_champions(t_vm *machine, char **av)
 		if (av[index][0] == '-')
 		{
 			if (handle_option(av, machine, &index, &next_n) > 0)
+			{
 				return EXIT_FAILURE;
+			}
 		}
 		else
 		{
@@ -29,9 +30,11 @@ int parse_champions(t_vm *machine, char **av)
 		index++;
 	}
 	machine->champions.size = champion_id;
-	if (read_champions(&machine->champions) > 0)
-		return EXIT_FAILURE;
 
+	if (read_champions(&machine->champions) > 0)
+	{
+		return EXIT_FAILURE;
+	}
 	place_champions(machine);
 	machine->last_alive = set_last_alive(machine);
 	return EXIT_SUCCESS;

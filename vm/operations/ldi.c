@@ -7,6 +7,7 @@ void my_ldi(t_vm *machine, t_process *process, const cw_t *operation)
 	unsigned char type;
 	int index = 1;
 	unsigned char acb  = machine->battlefield[ring(process->pc + index)];
+	
 	index += 1;
 	for (int i = 0; i < operation->num_args; i++)
 	{
@@ -32,6 +33,8 @@ void my_ldi(t_vm *machine, t_process *process, const cw_t *operation)
 
 	process->registers[arg[2]] = read_bytes(sizeof(int), machine->battlefield, ring(process->pc + (arg[0] + arg[1]) % IDX_MOD));
 	process->pc = ring(process->pc + index);
-	if (machine->verbosity == 4)
+	if (machine->verbosity & VERBOSE_CYCLE)
+	{
 		printf("Process %d | %s %d %d r%d\n", process->id, operation->mnemonique, arg[0], arg[1], arg[2]);
+	}
 }

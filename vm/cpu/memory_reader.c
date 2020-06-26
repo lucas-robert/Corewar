@@ -4,10 +4,6 @@ static const int SIGN_MASK[3] = {0xffffff00, 0xffff0000, 0xff000000};
 
 void copy_bytes(t_vm *machine, int address, int storage)
 {
-	// printf("copying %d to %d\n", storage, address);
-
-	// if (storage >> 23 == 1)
-	// 	storage ^= SIGN_MASK[2];
 	union
 	{
 		int integer;
@@ -15,14 +11,11 @@ void copy_bytes(t_vm *machine, int address, int storage)
 	} to_store;
 	to_store.integer = storage;
 
-	// printf("copying: ");
 	for (int i = 0; i < 4; i++)
 	{
-		// printf("%.2x ", to_store.bytes[3 - i]);
 		machine->battlefield[ring(address + i)] = to_store.bytes[3 - i];
 	}
-	// printf("\n");
-	return ;
+	return;
 }
 
 int read_bytes(int size, unsigned char *battlefield, int pc)
@@ -34,15 +27,11 @@ int read_bytes(int size, unsigned char *battlefield, int pc)
 
 	bytes_reader.integer = 0;
 	int i = size;
-	// printf("Reading %d bytes => ", size);
 	while(i)
 	{
 		i--;
-		// printf("%.2x ", (unsigned char)battlefield[pc + (size - i)]);
 		bytes_reader.bytes[i] = battlefield[pc + (size - i - 1)];
 	}
-	// printf(" \n");
-	// sign
 	if (bytes_reader.integer >> (7 + 8 *(size - 1)) == 1)
 		bytes_reader.integer |= SIGN_MASK[size - 1];
 
@@ -60,7 +49,6 @@ int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t ty
 			*index += REGISTER;
 			break;
 		case DIR_CODE:
-			// debug(ring(process->pc + *index), machine->battlefield);
 			res = read_bytes(NUMBER, machine->battlefield, ring(process->pc + *index));
 			*index += NUMBER;
 			break;
@@ -68,8 +56,6 @@ int get_byte_value(t_vm *machine, t_process *process, int *index, args_type_t ty
 			address = read_bytes(ADDRESS, machine->battlefield, ring(process->pc + *index));
 			if (modulo)
 			{
-				// printf("ADDRESS IS %d\n", ring(process->pc + (address % IDX_MOD)));
-				// debug(ring(process->pc + (address % IDX_MOD)), machine->battlefield);
 				res = read_bytes(NUMBER, machine->battlefield, ring(process->pc + (address % IDX_MOD)));
 			}
 			else

@@ -42,5 +42,5 @@ void print_memory(t_vm *machine, char flag)
 		}
 		printf("\n");
 	}
-	return ;
+	return;
 }
