@@ -77,7 +77,7 @@ void update_core_gui(t_vm *machine, int pc, int champion_id)
 	wrefresh(machine->gui->core_w);
 }
 
-void handle_gui(t_vm *machine, t_process *process)
+void gui_unseter(t_vm *machine, t_process *process)
 {
 	if (machine->gui)
 	{

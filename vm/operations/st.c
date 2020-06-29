@@ -27,7 +27,7 @@ void my_st(t_vm *machine, t_process *process, const cw_t *operation)
 				return (operation_failed(process));
 			}
 			process->registers[arg[1]] = process->registers[arg[0]];
-			if (machine->verbosity & VERBOSE_CYCLE)
+			if (machine->verbosity & VERBOSE_OP)
 			{
 				printf("Process %d | %s r%d %d\n", process->id, operation->mnemonique, arg[0], arg[1]);
 			}
@@ -38,7 +38,7 @@ void my_st(t_vm *machine, t_process *process, const cw_t *operation)
 			arg[i] = ring(process->pc + (address % IDX_MOD));
 			copy_bytes(machine, arg[1], process->registers[arg[0]]);
 			index += ADDRESS;
-			if (machine->verbosity & VERBOSE_CYCLE)
+			if (machine->verbosity & VERBOSE_OP)
 			{
 				printf("Process %d | %s r%d %d\n", process->id, operation->mnemonique, arg[0], address);
 			}

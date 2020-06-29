@@ -23,7 +23,7 @@ void my_sti(t_vm *machine, t_process *process, const cw_t *operation)
 	}
 	copy_bytes(machine, ring(process->pc + ((arg[1] + arg[2]) % IDX_MOD)), arg[0]);
 	process->pc = ring(process->pc + index);
-	if (machine->verbosity & VERBOSE_CYCLE)
+	if (machine->verbosity & VERBOSE_OP)
 	{
 		printf("Process %d | %s %d %d %d\n", process->id, operation->mnemonique, arg[0], arg[1], arg[2]);
 	}

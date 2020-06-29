@@ -17,7 +17,7 @@ void my_zjmp(t_vm *machine, t_process *process, const cw_t *operation)
 	}
 	else
 	{
-		if (machine->verbosity & VERBOSE_CYCLE)
+		if (machine->verbosity & VERBOSE_OP)
 		{
 			printf("Process %d | %s %d FAIL\n", process->id, operation->mnemonique, address);
 		}

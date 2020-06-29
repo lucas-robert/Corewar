@@ -59,7 +59,7 @@ void execute_process(t_vm *machine, t_process *process)
 	}
 	else
 	{
-		handle_gui(machine, process);
+		gui_unseter(machine, process);
 		if (is_op_valid(process->next_op))
 		{
 			(*operations[process->next_op])(machine, process, &cw_tab[process->next_op]);

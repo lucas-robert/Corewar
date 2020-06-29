@@ -26,7 +26,7 @@ void my_lldi(t_vm *machine, t_process *process, const cw_t *operation)
 
 	process->registers[arg[2]] = read_bytes(sizeof(int), machine->battlefield, (arg[0] + arg[1]) % MEM_SIZE);
 	process->pc = ring(process->pc + index);
-	if (machine->verbosity & VERBOSE_CYCLE)
+	if (machine->verbosity & VERBOSE_OP)
 	{
 		printf("Process %d | %s %d %d %d\n", process->id, operation->mnemonique, arg[0], arg[1], arg[2]);
 	}

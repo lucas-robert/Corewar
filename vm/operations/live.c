@@ -36,7 +36,7 @@ void my_live(t_vm *machine, t_process *process, const cw_t *operation)
 
 	process->pc = ring(process->pc + (4) + 1);
 	machine->nb_alive += 1;
-	if (machine->verbosity & VERBOSE_CYCLE)
+	if (machine->verbosity & VERBOSE_OP)
 	{
 		printf("Process %d | %s %d\n", process->id, operation->mnemonique, champion_number);
 	}
