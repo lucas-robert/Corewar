@@ -5,6 +5,15 @@
 #include <my_lib.h>
 #include <time.h>
 
+
+# define RED "\x1b[31m"
+# define GREEN "\x1b[32m"
+# define YELLOW "\x1b[33m"
+# define BLUE "\x1b[34m"
+# define MAGENTA "\x1b[35m"
+# define CYAN "\x1b[1;36m"
+# define RESET "\x1b[0m"
+
 # define MEM_SIZE                (4 * 1024)
 # define IDX_MOD                 512
 # define MAX_ARGS_NUMBER         4
@@ -224,6 +233,7 @@ void print_list(t_node **head);
 int play(t_vm *machine);
 
 //process_execution.c
+int is_op_valid(int c);
 void execute_process(t_vm *machine, t_process *current_process);
 void set_next_op(t_vm *machine, t_process *process);
 
@@ -250,7 +260,7 @@ int my_error(ERRORS err_code, char *str);
 # define MIN_LINE 70
 # define CORE_SIZE (BYTES_PER_LINE * 3) + ADDRESS_INDICATOR + 2
 # define HEADER_SIZE 8
-# define SLEEP_TIME 900000 //nanoseconds
+# define SLEEP_TIME 10000000000 //nanoseconds
 
 // print_memory.c
 void print_memory(t_vm *machine);
@@ -273,7 +283,7 @@ int has_acb(int opcode);
 void update_core_gui(t_vm *machine, int pc, int champion_id);
 void unset_core_gui(t_vm *machine, int pc, int champion_id);
 void unset_core_gui_continue(t_vm *machine, int pc, int champion_id);
-void handle_gui(t_vm *machine, t_process *process);
+void gui_unseter(t_vm *machine, t_process *process);
 
 //ncurses_legend.c
 void gui_legend(t_vm *machine);

@@ -14,9 +14,11 @@ void speaker(t_vm *machine)
 }
 void delete_vm(t_vm *machine)
 {
-	getch();
+	// sleep(10);
+
 	if (machine->gui)
 	{
+		getch();
 		delwin(machine->gui->core_w);
 		delwin(machine->gui->legend_w);
 		endwin();
@@ -37,6 +39,7 @@ int main(int ac, char **av)
 		return EXIT_FAILURE;
 
 	speaker(&machine);
+
 	if (!play(&machine))
 	{
 		print_results(&machine);

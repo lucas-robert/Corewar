@@ -23,18 +23,18 @@ void gui_legend(t_vm *machine)
 		len = snprintf(NULL, 0, "Player %d\n", machine->champions.array[i].id);
 		char player_id[len + 1];
 		sprintf(player_id, "Player %d\n", machine->champions.array[i].id);
-		mvwaddstr(machine->gui->legend_w, (i + 1) * 20, 2, player_id);
+		mvwaddstr(machine->gui->legend_w, (i + 1) * 14, 2, player_id);
 		wattroff(machine->gui->legend_w, COLOR_PAIR(i + 1));
 
 		len = snprintf(NULL, 0, "%s\n", machine->champions.array[i].name);
 		char player_name[len + 1];
 		sprintf(player_name, "%s\n", machine->champions.array[i].name);
-		mvwaddstr(machine->gui->legend_w, (i + 1) * 20 + 1, 2, player_name);
+		mvwaddstr(machine->gui->legend_w, (i + 1) * 14 + 1, 2, player_name);
 
 		len = snprintf(NULL, 0, "Last live :%d\n", machine->champions.array[i].last_live);
 		char last_live[len + 1];
 		sprintf(last_live, "Last live :%d\n", machine->champions.array[i].last_live);
-		mvwaddstr(machine->gui->legend_w, (i + 1) * 20 + 2, 2, last_live);
+		mvwaddstr(machine->gui->legend_w, (i + 1) * 14 + 2, 2, last_live);
 	}
 	wrefresh(machine->gui->legend_w);
 }

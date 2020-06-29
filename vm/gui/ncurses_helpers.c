@@ -34,7 +34,7 @@ int size_without_acb(int opcode)
 		case CONTINUE: //no_operation
 		case -1:
 		default:
-			return 1;
+			return 0;
 	}
 }
 

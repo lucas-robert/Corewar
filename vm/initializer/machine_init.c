@@ -38,13 +38,14 @@ void init_process(t_vm *machine, int position, int id)
 void place_champions(t_vm *machine)
 {
 	int padding = MEM_SIZE / machine->champions.size;
+
 	for (int i = 0; i < machine->champions.size; i++)
 	{
-		my_memcpy(&machine->battlefield[padding * i], machine->champions.array[i].code, PROCESS_MAX_SIZE);
+		my_memcpy(&machine->battlefield[padding * i], machine->champions.array[i].code, machine->champions.array[i].exec_code_size);
 		init_process(machine, (padding * i), i + 1);
 		if (machine->gui)
 		{
-			ncurses_place_champion(machine, (padding * i), i + 1);
+			ncurses_place_champion(machine, (padding * i), i);
 		}
 	}
 	if (machine->gui)
@@ -65,5 +66,6 @@ void init_vm(t_vm *machine)
 	machine->dump_cycle = -1;
 	machine->verbosity = 0;
 	machine->gui = 0;
-	my_memset(machine->battlefield, 0 , MEM_SIZE + 1);
+	my_memset(machine->battlefield, 0, MEM_SIZE + 1);
+	// print_memory(machine);
 }

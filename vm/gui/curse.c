@@ -1,4 +1,3 @@
-#include "../includes/gui.h"
 #include <ncurses.h>
 
 
@@ -65,7 +64,7 @@
 // 		printw(stdscr, "0x%.4x : ", line * 50);
 // 		for (int row = 0; row < 50; row ++)
 // 		{
-// 			printw(stdscr, "%.2x ", arena[line * BYTES_PER_LINE + row]);
+// 			printw(stdscr, "%.2x ", arena[line * 64 + row]);
 // 		}
 // 		// printw("\n");
 // 	}
@@ -94,8 +93,28 @@
 //   	return 0;
 // }
 
-void test()
+void init_color_pairs()
 {
+	init_pair(0, COLOR_WHITE, COLOR_BLACK);
+	//CHAMP 1
+	init_pair(1, COLOR_RED, COLOR_BLACK); // CODE
+	init_pair(10, COLOR_CYAN, COLOR_RED); // PC
+	init_pair(11, COLOR_WHITE, COLOR_RED); // NEXT_CODE_TO_EXEC
+
+	//CHAMP 2
+	init_pair(2, COLOR_BLUE, COLOR_BLACK); // CODE
+	init_pair(20, COLOR_CYAN, COLOR_BLUE); // PC
+	init_pair(21, COLOR_WHITE, COLOR_BLUE); // NEXT_CODE_TO_EXEC
+
+	//CHAMP 3
+	init_pair(3, COLOR_GREEN, COLOR_BLACK); // CODE
+	init_pair(30, COLOR_CYAN, COLOR_GREEN); // PC
+	init_pair(31, COLOR_WHITE, COLOR_GREEN); // NEXT_CODE_TO_EXEC
+
+	// CHAMP 4
+	init_pair(4, COLOR_MAGENTA, COLOR_BLACK); // CODE
+	init_pair(40, COLOR_CYAN, COLOR_MAGENTA); // PC
+	init_pair(41, COLOR_WHITE, COLOR_MAGENTA); // NEXT_CODE_TO_EXEC
 
 }
 
@@ -103,22 +122,22 @@ void test()
 #include <unistd.h>
 int main(int argc, char *argv[])
 {
-	int parent_x;
-	int parent_y;
-	int LEGEND_SIZE = 40;
+	// int parent_x;
+	// int parent_y;
+	// int LEGEND_SIZE = 40;
 	initscr();
 	noecho();
 	curs_set(FALSE);
 	//get our maximum window dimensions
-	getmaxyx(stdscr, parent_y, parent_x);
+	// getmaxyx(stdscr, parent_y, parent_x);
 	// set up initial windows
-	WINDOW *arena = newwin(parent_y, parent_x - LEGEND_SIZE, 0, 0);
-	WINDOW *legend = newwin(parent_y, LEGEND_SIZE,0,  parent_x - LEGEND_SIZE);
+	// WINDOW *arena = newwin(parent_y, parent_x - LEGEND_SIZE, 0, 0);
+// / 	WINDOW *legend = newwin(parent_y, LEGEND_SIZE,0,  parent_x - LEGEND_SIZE);
 	// draw to our windows
-	mvwprintw(arena, 0, 0, "Arena");
-	mvwprintw(legend, 0, 0, "legend");
-	box(arena, '|', '-' );
-	box(legend, '|', '-' );
+	// mvwprintw(arena, 0, 0, "Arena");
+	// mvwprintw(legend, 0, 0, "legend");
+	// box(arena, '|', '-' );
+// /	box(legend, '|', '-' );
 	// addstr("8457913284759827345982734985 Salut les copains\n");
 	// refresh();
 	// sleep(3);
@@ -130,12 +149,46 @@ int main(int argc, char *argv[])
 	// refresh();
 	// sleep(5);
 	// // refresh each window
-	wrefresh(arena);
-	wrefresh(legend);
-	sleep(5);
+	// wrefresh(arena);
+	// wrefresh(legend);
+	// sleep(5);
 	// clean up
-	delwin(arena);
-	delwin(legend);
+	// delwin(arena);
+// /	delwin(legend);
+	start_color();
+	init_color_pairs();
+	attron(COLOR_PAIR(1) | COLOR_PAIR(4));
+	mvaddstr(0,0, "Salut les copains");
+	refresh();
+	attroff(COLOR_PAIR(4));
+	sleep(2);
+	move(0,0);
+
+	attron(COLOR_PAIR(1));
+	mvaddstr(0,0,"Salut les copains");
+	refresh();
+	attroff(COLOR_PAIR(1));
+	sleep(2);
+
+	// chgat(-1, A_REVERSE, 0, NULL);
+
+	attron(COLOR_PAIR(3));
+	chtype byte;
+	byte = mvinch(0,0);
+
+	if ((byte & A_COLOR) == COLOR_PAIR(4))
+	{
+		mvprintw(2,1, "4");
+	}
+	if ((byte & A_COLOR) == COLOR_PAIR(1))
+	{
+		mvprintw(3,1, "1");
+	}
+	if ((byte & A_COLOR) == COLOR_PAIR(3))
+	{
+		mvprintw(4,1, "3");
+	}
+	getch();
 	endwin();
 	return 0;
 }

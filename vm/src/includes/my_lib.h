@@ -61,7 +61,7 @@ int	my_memcmp(const void *s1, const void *s2, size_t n);
 void *my_memcpy(void *dest, const void *src, size_t n);
 void my_memdel(void **ap);
 void *my_memmove(void *dest, const void *src, size_t n);
-void *my_memset(void *b, int c, size_t n);
+void *my_memset(void *b, int c, int n);
 
 //Structs functions
 

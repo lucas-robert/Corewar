@@ -1,8 +1,8 @@
 #include <my_lib.h>
 
-void *my_memset(void *b, int c, size_t n)
+void *my_memset(void *b, int c, int n)
 {
-	size_t			i;
+	int			i;
 	unsigned char	*cpy;
 
 	if (n == 0)

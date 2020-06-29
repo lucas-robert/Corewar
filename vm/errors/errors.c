@@ -40,7 +40,7 @@ int my_error(ERRORS err_code, char *str)
 	}
 	else if (err_code == WRONG_VERBOSE)
 	{
-		fprintf(stderr,"Usage: -v 1: Show lives\n-v 2 show cycles\n -v 4 show operations \n");
+		fprintf(stderr,"Verbose usage:\n    -v 1: Show lives\n    -v 2: show cycles\n    -v 4: show operations\nVerbosity levels can be combined");
 	}
 	else if (err_code == TOO_LONG_CODE)
 	{
@@ -50,6 +50,6 @@ int my_error(ERRORS err_code, char *str)
 	{
 		fprintf(stderr,"Undefined error\n");
 	}
-		
+
 	return 1;
 }

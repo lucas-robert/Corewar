@@ -9,31 +9,29 @@ void set_header(t_vm *machine)
 	{
 		mvwaddstr(machine->gui->header_w, i + 1,74, header_text[i]);
 	}
-
 }
 
 void init_ncurses_battlefield(t_vm *machine)
 {
+	char address[ADDRESS_INDICATOR];
+	char bytes[4]; //2 char per byte, plus space and \0
+
+	wattron(machine->gui->core_w, COLOR_PAIR(0));
 	for (int line = 0; line < MEM_SIZE / BYTES_PER_LINE; line++)
 	{
-		attron(COLOR_PAIR(0));
-		char address[ADDRESS_INDICATOR];
 		sprintf(address, "0x%.4x : ", line * BYTES_PER_LINE);
 		waddstr(machine->gui->core_w, address);
-		// addstr(address);
+
 		for (int row = 0; row < BYTES_PER_LINE; row ++)
 		{
-			char bytes[4];
-			sprintf(bytes, "%.2x ", machine->battlefield[line * BYTES_PER_LINE + row]);
+			sprintf(bytes, "%.2x ", 0);
 			waddstr(machine->gui->core_w, bytes);
-			// addstr(bytes);
 		}
-		// addstr("\n");
 		waddstr(machine->gui->core_w, "\n");
 	}
+
 	wrefresh(machine->gui->core_w);
-	attroff(COLOR_PAIR(0));
-	// refresh();
+	wattroff(machine->gui->core_w, COLOR_PAIR(0));
 	return;
 }
 
@@ -59,7 +57,6 @@ void init_color_pairs()
 	init_pair(4, COLOR_MAGENTA, COLOR_BLACK); // CODE
 	init_pair(40, COLOR_CYAN, COLOR_MAGENTA); // PC
 	init_pair(41, COLOR_WHITE, COLOR_MAGENTA); // NEXT_CODE_TO_EXEC
-
 
 }
 
@@ -97,7 +94,6 @@ void init_gui(t_vm *machine)
     	printf("Your terminal does not support color\n");
 		return;
 	}
-
 	curs_set(FALSE);
 	init_windows(machine);
 	noecho();
@@ -108,17 +104,17 @@ void init_gui(t_vm *machine)
 
 void ncurses_place_champion(t_vm *machine, int position, int id)
 {
-	// Set attribute
 	t_coords location;
-	wattron(machine->gui->core_w, COLOR_PAIR(id)); // Set the code in the defined color
-	for (int i = 0; i < machine->champions.array[id - 1].exec_code_size; i++)
+	char bytes[4];
+
+	wattron(machine->gui->core_w, COLOR_PAIR(id + 1)); // Set the code in the defined color
+	for (int i = 0; i < machine->champions.array[id].exec_code_size; i++)
 	{
 		get_position(position, &location);
-		char bytes[4];
-		sprintf(bytes, "%.2x ", machine->champions.array[id - 1].code[i]);
+		sprintf(bytes, "%.2x ", machine->champions.array[id].code[i]);
 		mvwaddstr(machine->gui->core_w, location.y , location.x , bytes);
 		position = ring(position + 1);
 	}
-	wattroff(machine->gui->core_w, COLOR_PAIR(id));
+	wattroff(machine->gui->core_w, COLOR_PAIR(id + 1));
 	wrefresh(machine->gui->core_w);
 }

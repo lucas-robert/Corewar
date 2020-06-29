@@ -36,7 +36,7 @@ t_process *copy_process(t_vm *machine, t_process *root, int address)
 	new_process->champion_id = root->champion_id;
 	new_process->id = stack_len(&machine->process_stack) + 1;
 	new_process->carry = root->carry;
-	new_process->pc = address;
+	new_process->pc = ring(address);
 	new_process->last_live = root->last_live;
 	new_process->cycle_till_exec = 0;
 	new_process->next_op = -1;
