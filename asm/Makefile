@@ -6,12 +6,13 @@ SRC =	main.c \
 		parser/metadata.c \
 		tokenizer/tokenizer.c \
 		tokenizer/parse_tokens.c \
+		tokenizer/scanner.c \
 		compiler/operations_table_helper.c \
 		compiler/compile_helpers.c \
 		compiler/compile.c \
 		compiler/delete_struct.c \
 		compiler/write.c \
-		parser/scanner.c \
+
 
 OBJECT_MY_ASM = $(SRC:.c=.o)
 INCLUDES_MY_ASM = -I ./includes/

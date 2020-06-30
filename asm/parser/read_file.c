@@ -45,7 +45,7 @@ char *prepare_line(char *s)
     new = NULL;
     new = my_strip(s);
     strip_extra_spaces(new);
-    my_printf("%s\n", new);
+    // my_printf("%s\n", new);
     free(s);
 
     return new;
@@ -71,6 +71,7 @@ void read_file(char *filename, t_base *base)
     while ((s = my_readline(fd)) != NULL)
     {
         base->code[i] = prepare_line(s);
+		// printf("Line %i : [%s]\n", i, base->code[i]);
         base->lines++;
         s = NULL;
         i++;

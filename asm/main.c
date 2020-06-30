@@ -68,7 +68,6 @@ int main(int ac, char **av)
     // set default data for head
     header_t metadata;
     metadata.magic = COREWAR_EXEC_MAGIC;
-    metadata.prog_size = MEM_SIZE;
 
     find_metadata(&base, &metadata);
     tokenize(&base);

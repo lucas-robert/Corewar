@@ -31,21 +31,6 @@ void _scan_comment(t_tokens_stream *stream, char *line, int *curr_line)
     stream->i++;
 }
 
-int search_comment(char *line, t_base *base, int *curr_line)
-{
-    int comment_offset = 0;
-    for (int i = 0; i < my_strlen(line); i++)
-    {
-        if (line[i] == COMMENT_CHAR)
-        {
-            _scan_comment(base->stream, &line[i], curr_line);
-            break;
-        }
-        comment_offset++;
-    }
-    return comment_offset;
-}
-
 void _scan_register(t_tokens_stream *stream, char *line, int direct,
                     int *curr_line)
 {
@@ -53,6 +38,7 @@ void _scan_register(t_tokens_stream *stream, char *line, int direct,
     int i = 0;
 
     if (!line || !*line) return;
+	printf("Scanning register => %s\n", line);
     stream->tokens[stream->i].value = (char *)malloc(sizeof(char) * 3 + 1);
     stream->tokens[stream->i].line = *curr_line + 1;
     if (direct == 1)
@@ -68,6 +54,7 @@ void _scan_register(t_tokens_stream *stream, char *line, int direct,
         q++;
     }
     stream->tokens[stream->i].value[q] = '\0';
+	printf("Scanned %s\n", stream->tokens[stream->i].value);
     stream->i++;
 }
 
@@ -196,7 +183,7 @@ void _scan_argument(t_tokens_stream *stream, char *line, int *curr_line)
                 _scan_direct(stream, &line[i + 1], curr_line);
             else if (line[i] == LABEL_CHAR)
                 _scan_indirect(stream, &line[i + 1], 0, curr_line);
-            else if (line[i] == 'r' && matches_register(&line[i + 1]))
+            else if (line[i] == 'r')
                 _scan_register(stream, &line[i + 1], 0, curr_line);
             else if (isnum(line[i]) || line[i] == '-')
                 _scan_number(stream, &line[i], 0, curr_line);

@@ -2,7 +2,7 @@
 
 int isspace(int a)
 {
-    if (a == ' ' || a == '\t' || a == '\r' || a == '\v' || a == '\f')
+    if (a == ' ' || a == '\t')
         return (1);
     return (0);
 }

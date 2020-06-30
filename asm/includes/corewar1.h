@@ -249,6 +249,7 @@ void write_metadata(header_t *, int);
 
 int search_comment(char *line, t_base *base, int *curr_line);
 void _scan_argument(t_tokens_stream *stream, char *line, int *curr_line);
+void _scan_comment(t_tokens_stream *stream, char *line, int *curr_line);
 int string_match_labels_char(char *s, int max);
 
 #endif

@@ -149,13 +149,13 @@ int fill_operation(t_base *base, char *buffer)
 
     for (int i = 0; i < base->instructions_len + 1; i++)
     {
-        if (byte_counter == 0)
-        {
-            printf("zero %d\n", i);
-        }
+        // if (byte_counter == 0)
+        // {
+        //     printf("zero %d\n", i);
+        // }
         base->instructions[i].label.address.integer = byte_counter;
         buffer[byte_counter] = base->instructions[i].op_code;
-        my_printf("d %d %d\n", byte_counter, base->instructions[i].op_code);
+        // my_printf("d %d %d\n", byte_counter, base->instructions[i].op_code);
         byte_counter++;
 
         if (has_acb(base->instructions[i].op_code))
@@ -182,7 +182,7 @@ int fill_operation(t_base *base, char *buffer)
             else if (is_dir(base->instructions[i].arguments[z].type))
             {
                 int s = t_dir_size(base->instructions[i].op_code);
-                printf("%d %d\n", base->instructions[i].op_code, s);
+                // printf("%d %d\n", base->instructions[i].op_code, s);
                 for (int q = s - 1; q >= 0; q--)
                 {
                     buffer[byte_counter] =
@@ -193,7 +193,7 @@ int fill_operation(t_base *base, char *buffer)
             else if (is_ind(base->instructions[i].arguments[z].type))
             {
                 int s = t_dir_size(base->instructions[i].op_code);
-                printf("%d %d\n", base->instructions[i].op_code, s);
+                // printf("%d %d\n", base->instructions[i].op_code, s);
                 for (int q = s - 1; q >= 0; q--)
                 {
                     buffer[byte_counter] =
@@ -240,7 +240,7 @@ void fill_address(t_base *base, char *buffer)
 
                 argument_value where;
                 where.integer = -(c.integer - label.integer);
-                printf("label %x\n", where.integer);
+                // printf("label %x\n", where.integer);
                 for (int q = s - 1; q >= 0; q--)
                 {
                     buffer[l] = where.byte[q];
@@ -258,7 +258,6 @@ void compile(t_base *base, char *filename, header_t *metadata)
     char *asm_name = get_asm_name(filename);
     fd = open(asm_name, O_RDWR | O_CREAT | O_TRUNC, 0644);
     free(asm_name);
-    write_metadata(metadata, fd);
 
     //                          op acb arg1 arg2 arg3
     // 4 byte arg1 T_DIR 4 arg1
@@ -272,7 +271,11 @@ void compile(t_base *base, char *filename, header_t *metadata)
     int byte_counter = fill_operation(base, buffer);
 
     fill_address(base, buffer);
+
+	metadata->prog_size  = my_strlen(buffer);
+	write_metadata(metadata, fd);
     write(fd, buffer, byte_counter);
+
     close(fd);
     free(buffer);
 

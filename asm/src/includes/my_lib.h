@@ -54,5 +54,10 @@ char *my_strncpy(char *, char *, int);
 int isspace(int a);
 int isnum(char a);
 char *my_strndup(char *a, int n);
+int	my_memcmp(const void *s1, const void *s2, size_t n);
+void *my_memcpy(void *dest, const void *src, size_t n);
+void my_memdel(void **ap);
+void *my_memmove(void *dest, const void *src, size_t n);
+void *my_memset(void *b, int c, int n);
 
 #endif

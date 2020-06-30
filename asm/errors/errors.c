@@ -31,23 +31,23 @@ void my_parse_error(PARSE_ERRORS err, int line, t_base *base)
 
     if (err == UNDEFINED_TOKEN)
     {
-        my_printf("undefined token line %d\n", line);
+        my_printf("undefined token line %d\n", line + base->EOM_number);
     }
     else if (err == TOO_MUCH_ARGUMENTS)
     {
-        my_printf("too much arguments line %d\n", line);
+        my_printf("too much arguments line %d\n", line + base->EOM_number);
     }
     else if (err == DOUBLE_LABEL)
     {
-        my_printf("label duplicate line %d\n", line);
+        my_printf("label duplicate line %d\n", line + base->EOM_number);
     }
     else if (err == DOUBLE_INST)
     {
-        my_printf("instruction duplicate line %d\n", line);
+        my_printf("instruction duplicate line %d\n", line + base->EOM_number);
     }
     else if (err == NOT_ENOUGH_ARGUMENTS)
     {
-        my_printf("not enough arguments line %d\n", line);
+        my_printf("not enough arguments line %d\n", line + base->EOM_number);
     }
     exit(1);
 }

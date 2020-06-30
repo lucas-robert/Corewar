@@ -129,6 +129,7 @@ void init_instruction(t_base *base, t_token *token, int *current_line_index)
         if (base->instructions_len != -1 &&
             not_enough_arguments(&base->instructions[base->instructions_len]))
         {
+			// printf("Error parsing ")
             my_parse_error(NOT_ENOUGH_ARGUMENTS, *current_line_index, base);
         }
         *current_line_index = token->line;

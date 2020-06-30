@@ -41,19 +41,26 @@ void print_stream(t_base *base)
 void add_instruction(t_base *base, char *line, int *curr_line, int *index,
                      int comment_offset)
 {
-    base->stream->tokens[base->stream->i].value =
+	int y = 0;
+
+	base->stream->tokens[base->stream->i].value =
         (char *)malloc(sizeof(char) * 10);
     base->stream->tokens[base->stream->i].type = INSTRUCTION;
     base->stream->tokens[base->stream->i].line = *curr_line + 1;
-    int y = 0;
+
     while (*index < comment_offset && !isspace(line[*index]))
     {
         base->stream->tokens[base->stream->i].value[y] = line[*index];
         (*index)++;
         y++;
     }
+
     base->stream->tokens[base->stream->i].value[y] = '\0';
     base->stream->i++;
+	// while (line[*index] && isspace(line[*index]))
+	// {
+	// 	(*index)++;
+	// }
 }
 
 void add_label(t_base *base, char *line, int *curr_line, int index)
@@ -78,7 +85,10 @@ int search_label(t_base *base, char *line, int comment_offset, int *curr_line)
     int index = 0;
     while (index < comment_offset)
     {
-        if (isspace(line[index]) || line[index] == SEPARATOR_CHAR) break;
+        if (isspace(line[index]) || line[index] == SEPARATOR_CHAR)
+		{
+			break;
+		}
         if (line[index] == LABEL_CHAR && string_match_labels_char(line, index))
         {
             // add new label
@@ -91,6 +101,24 @@ int search_label(t_base *base, char *line, int comment_offset, int *curr_line)
     }
     return 0;
 }
+
+
+int search_comment(char *line, t_base *base, int *curr_line)
+{
+    int comment_offset = 0;
+	int len = my_strlen(line);
+    for (int i = 0; i < len; i++)
+    {
+        if (line[i] == COMMENT_CHAR)
+        {
+            _scan_comment(base->stream, &line[i], curr_line);
+            break;
+        }
+        comment_offset++;
+    }
+    return comment_offset;
+}
+
 
 /*
     {"live", 1, {T_DIR}, 1, 10, "alive"},
@@ -120,7 +148,8 @@ int search_label(t_base *base, char *line, int comment_offset, int *curr_line)
 
 int is_empty(char *line)
 {
-    if (!line || my_strcmp(line, "\n") == 0 || my_strlen(line) == 0) return (1);
+    if (!line || my_strcmp(line, "\n") == 0 || my_strlen(line) == 0)
+	 	return (1);
     return (0);
 }
 int find_operation(char *op, t_base *base)
@@ -150,7 +179,9 @@ void tokenize(t_base *base)
 
     while (curr_line < base->lines)
     {
+		// printf("curr_line is %d / %d total line\n", curr_line, base->lines);
         char *line = base->code[curr_line];
+
         if (*line && (*line == COMMENT_CHAR || is_empty(line)))
         {
             curr_line++;
@@ -161,34 +192,48 @@ void tokenize(t_base *base)
 
         if (comment_offset == 0)
         {
+			curr_line++;
             continue;
         }
 
-        int index = search_label(base, line, comment_offset, &curr_line);
+        int runner = search_label(base, line, comment_offset, &curr_line);
 
-        while (index < comment_offset &&
-               (isspace(line[index]) || line[index] == LABEL_CHAR))
+        while (runner < comment_offset &&
+               (isspace(line[runner]) || line[runner] == LABEL_CHAR))
         {
-            index++;
+            runner++;
         }
 
-        if (line[index] != '\0' && find_operation(&line[index], base))
+        if (line[runner] != '\0' && find_operation(&line[runner], base))
         {
-            add_instruction(base, line, &curr_line, &index, comment_offset);
+            add_instruction(base, line, &curr_line, &runner, comment_offset);
         }
-        else if (line[index])
+        else if (line[runner])
         {
             set_null_token(base->stream, &curr_line);
         }
 
-        for (int i = comment_offset - 1; i >= index; i--)
+		printf("scanning [%s]\n", &line[runner]);
+
+        for (int i = comment_offset - 1; i >= runner; i--)
         {
             if (line[i] == SEPARATOR_CHAR || (isspace(line[i]) && i - 1 >= 0 &&
                                               line[i - 1] != SEPARATOR_CHAR))
             {
+				printf("===>Scanning %s\n", &line[i + 1]);
                 _scan_argument(base->stream, &line[i + 1], &curr_line);
             }
         }
+
+		// for (int i = label_offset; i < comment_offset; i++)
+		// {
+		// 	while (i < comment_offset - 1 && line[i] != SEPARATOR)
+		// 	{
+		// 		i++;
+		// 	}
+		// 	printf("scanning %s\n", &line[i + 1]);
+		// 	// _scan_argument(base->stream, &line[i + 1], &curr_line);
+		// }
         curr_line++;
     }
 
