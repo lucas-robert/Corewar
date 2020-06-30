@@ -44,7 +44,7 @@ void write_metadata(header_t *metadata, int fd)
     unsigned char writable_header[header_size];
     int runner = 0;
 
-    my_memset(writable_header,0 ,header_size);
+    my_memset(writable_header, 0, header_size);
 
     runner += convert_int(writable_header, metadata->magic,
                           sizeof(COREWAR_EXEC_MAGIC));

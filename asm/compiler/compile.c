@@ -52,15 +52,27 @@ void preprocess(t_base *base)
     for (int i = 0; i < base->instructions_len + 1; i++)
     {
         t_instruction *l = &base->instructions[i];
-        if (l->op_code <= 0 || l->op_code >= 17) my_printf("error op code");
+
+        if (l->op_code <= 0 || l->op_code >= 17)
+		{
+			my_printf("error op code");
+		}
         if (l->arguments_number != base->cw_tab[l->op_code - 1].num_args)
-            my_printf("Error arguments number\n");
+		{
+			my_printf("Error arguments number\n");
+		}
         for (int z = 0; z < l->arguments_number; z++)
         {
             if (!arg_validation_dispatcher(l->op_code, l->arguments[z].type, z))
-                my_printf("ERRRORRRR for %d %d %d\n", z, l->op_code,
+			{
+				my_printf("ERRRORRRR for %d %d %d\n", z, l->op_code,
                           l->arguments[z].type);
-            if (has_acb(l->op_code)) set_acb(l);
+			}
+
+            if (has_acb(l->op_code))
+			{
+				set_acb(l);
+			}
             set_value(l);
         }
     }
@@ -171,35 +183,35 @@ int fill_operation(t_base *base, char *buffer)
                 if (is_direct_or_indirect(
                         base->instructions[i].arguments[z].type))
                     base->instructions[i].arguments[z].label = byte_counter;
-            }
 
-            if (is_reg(base->instructions[i].arguments[z].type))
-            {
-                buffer[byte_counter] =
-                    base->instructions[i].arguments[z].value.byte[0];
-                byte_counter++;
-            }
-            else if (is_dir(base->instructions[i].arguments[z].type))
-            {
-                int s = t_dir_size(base->instructions[i].op_code);
-                // printf("%d %d\n", base->instructions[i].op_code, s);
-                for (int q = s - 1; q >= 0; q--)
-                {
-                    buffer[byte_counter] =
-                        base->instructions[i].arguments[z].value.byte[q];
-                    byte_counter++;
-                }
-            }
-            else if (is_ind(base->instructions[i].arguments[z].type))
-            {
-                int s = t_dir_size(base->instructions[i].op_code);
-                // printf("%d %d\n", base->instructions[i].op_code, s);
-                for (int q = s - 1; q >= 0; q--)
-                {
-                    buffer[byte_counter] =
-                        base->instructions[i].arguments[z].value.byte[q];
-                    byte_counter++;
-                }
+	            if (is_reg(base->instructions[i].arguments[z].type))
+	            {
+	                buffer[byte_counter] =
+	                    base->instructions[i].arguments[z].value.byte[0];
+	                byte_counter++;
+	            }
+	            else if (is_dir(base->instructions[i].arguments[z].type))
+	            {
+	                int s = t_dir_size(base->instructions[i].op_code);
+	                // printf("%d %d\n", base->instructions[i].op_code, s);
+	                for (int q = s - 1; q >= 0; q--)
+	                {
+	                    buffer[byte_counter] =
+	                        base->instructions[i].arguments[z].value.byte[q];
+	                    byte_counter++;
+	                }
+	            }
+	            else if (is_ind(base->instructions[i].arguments[z].type))
+	            {
+	                int s = 2;
+	                // printf("%d %d\n", base->instructions[i].op_code, s);
+	                for (int q = s - 1; q >= 0; q--)
+	                {
+	                    buffer[byte_counter] =
+	                        base->instructions[i].arguments[z].value.byte[q];
+	                    byte_counter++;
+	                }
+				}
             }
         }
     }
@@ -272,7 +284,8 @@ void compile(t_base *base, char *filename, header_t *metadata)
 
     fill_address(base, buffer);
 
-	metadata->prog_size  = my_strlen(buffer);
+	metadata->prog_size  = byte_counter;
+	printf("Byte counter: %d\n", byte_counter);
 	write_metadata(metadata, fd);
     write(fd, buffer, byte_counter);
 

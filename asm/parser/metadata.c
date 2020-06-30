@@ -4,6 +4,7 @@
 void set_name(char *line, header_t *metadata, t_base *base)
 {
     int i;
+	my_memset(metadata->prog_name, 0, PROG_NAME_LENGTH);
 
     i = 0;
     while (*line && *line != '"')
@@ -36,6 +37,7 @@ void set_name(char *line, header_t *metadata, t_base *base)
 void set_comment(char *line, header_t *metadata, t_base *base)
 {
     int i;
+	my_memset(metadata->comment, 0, COMMENT_LENGTH);
 
     i = 0;
     while (*line && *line != '"')
