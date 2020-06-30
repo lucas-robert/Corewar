@@ -58,3 +58,8 @@ vm/corewar
 vm/asm
 vm/custom
 vm/test.c
+
+
+asm/files
+asm/asm
+asm/myrcc_macos
