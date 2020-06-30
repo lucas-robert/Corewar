@@ -119,33 +119,6 @@ int search_comment(char *line, t_base *base, int *curr_line)
     return comment_offset;
 }
 
-
-/*
-    {"live", 1, {T_DIR}, 1, 10, "alive"},
-    {"ld", 2, {T_DIR | T_IND, T_REG}, 2, 5, "load"},
-    {"st", 2, {T_REG, T_IND | T_REG}, 3, 5, "store"},
-    {"add", 3, {T_REG, T_REG, T_REG}, 4, 10, "addition"},
-    {"sub", 3, {T_REG, T_REG, T_REG}, 5, 10, "soustraction"},
-    {"and", 3, {T_REG | T_DIR | T_IND, T_REG | T_IND | T_DIR, T_REG}, 6, 6, "et
-   (and  r1, r2, r3   r1&r2 -> r3"},
-    {"or", 3, {T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG}, 7, 6,"ou
-   (or   r1, r2, r3   r1 | r2 -> r3"},
-    {"xor", 3, {T_REG | T_IND | T_DIR, T_REG | T_IND | T_DIR, T_REG}, 8, 6, "ou
-   (xor  r1, r2, r3   r1^r2 -> r3"},
-    {"zjmp", 1, {T_DIR}, 9, 20, "jump if zero"},
-    {"ldi", 3, {T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG}, 10, 25,"load
-   index"},
-    {"sti", 3, {T_REG, T_REG | T_DIR | T_IND, T_DIR | T_REG}, 11, 25,"store
-   index"},
-    {"fork", 1, {T_DIR}, 12, 800, "fork"},
-    {"lld", 2, {T_DIR | T_IND, T_REG}, 13, 10, "long load"},
-    {"lldi", 3, {T_REG | T_DIR | T_IND, T_DIR | T_REG, T_REG}, 14, 50,"long load
-   index"},
-    {"lfork", 1, {T_DIR}, 15, 1000, "long fork"},
-    {"aff", 1, {T_REG}, 16, 2, "aff"},
-    {0, 0, {0}, 0, 0, 0}
-*/
-
 int is_empty(char *line)
 {
     if (!line || my_strcmp(line, "\n") == 0 || my_strlen(line) == 0)
@@ -158,8 +131,8 @@ int find_operation(char *op, t_base *base)
     for (int i = 0; i < 18; i++)
     {
         len = my_strlen(base->cw_tab[i].mnemonique);
-        my_printf("len %d %s %s\n", len, base->cw_tab[i].mnemonique,
-                  &op[len + 1]);
+        // my_printf("len %d %s %s\n", len, base->cw_tab[i].mnemonique,
+                  // &op[len + 1]);
         if (my_strncmp(op, base->cw_tab[i].mnemonique, len) == 0 &&
             (op[len] == ' ' || op[len] == '\t'))
             return (1);
@@ -171,7 +144,6 @@ int find_operation(char *op, t_base *base)
 // on fail will exit
 void tokenize(t_base *base)
 {
-    // todo add customization
     int curr_line = base->EOM_number;
     base->stream = (t_tokens_stream *)malloc(sizeof(t_tokens_stream) * 1);
     base->stream->tokens = (t_token *)malloc(sizeof(t_token) * 1024);
@@ -179,7 +151,6 @@ void tokenize(t_base *base)
 
     while (curr_line < base->lines)
     {
-		// printf("curr_line is %d / %d total line\n", curr_line, base->lines);
         char *line = base->code[curr_line];
 
         if (*line && (*line == COMMENT_CHAR || is_empty(line)))
@@ -213,30 +184,18 @@ void tokenize(t_base *base)
             set_null_token(base->stream, &curr_line);
         }
 
-		printf("scanning [%s]\n", &line[runner]);
 
         for (int i = comment_offset - 1; i >= runner; i--)
         {
             if (line[i] == SEPARATOR_CHAR || (isspace(line[i]) && i - 1 >= 0 &&
                                               line[i - 1] != SEPARATOR_CHAR))
             {
-				printf("===>Scanning %s\n", &line[i + 1]);
                 _scan_argument(base->stream, &line[i + 1], &curr_line);
             }
         }
-
-		// for (int i = label_offset; i < comment_offset; i++)
-		// {
-		// 	while (i < comment_offset - 1 && line[i] != SEPARATOR)
-		// 	{
-		// 		i++;
-		// 	}
-		// 	printf("scanning %s\n", &line[i + 1]);
-		// 	// _scan_argument(base->stream, &line[i + 1], &curr_line);
-		// }
         curr_line++;
     }
 
-    print_stream(base);
+    // print_stream(base);
     return;
 }

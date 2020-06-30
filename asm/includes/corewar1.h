@@ -222,6 +222,7 @@ void validate_filename(char *s1);
 char *prepare_line(char *s);
 void read_file(char *filename, t_base *base);
 
+void init_metadata(header_t *metadata);
 void find_metadata(t_base *base, header_t *metadata);
 void parse_tokens(t_base *base);
 void my_parse_error(PARSE_ERRORS err, int line, t_base *base);

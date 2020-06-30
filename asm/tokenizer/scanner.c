@@ -38,7 +38,6 @@ void _scan_register(t_tokens_stream *stream, char *line, int direct,
     int i = 0;
 
     if (!line || !*line) return;
-	printf("Scanning register => %s\n", line);
     stream->tokens[stream->i].value = (char *)malloc(sizeof(char) * 3 + 1);
     stream->tokens[stream->i].line = *curr_line + 1;
     if (direct == 1)
@@ -46,7 +45,6 @@ void _scan_register(t_tokens_stream *stream, char *line, int direct,
     else
         stream->tokens[stream->i].type = REGISTER;
     stream->tokens[stream->i].value[0] = 'r';
-    // todo add handle
     while (line[i] >= 49 && line[i] <= 57)
     {
         stream->tokens[stream->i].value[q] = line[i];
@@ -54,7 +52,6 @@ void _scan_register(t_tokens_stream *stream, char *line, int direct,
         q++;
     }
     stream->tokens[stream->i].value[q] = '\0';
-	printf("Scanned %s\n", stream->tokens[stream->i].value);
     stream->i++;
 }
 

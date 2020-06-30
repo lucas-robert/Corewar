@@ -55,18 +55,17 @@ void preprocess(t_base *base)
 
         if (l->op_code <= 0 || l->op_code >= 17)
 		{
-			my_printf("error op code");
+			my_printf("Wrong op code, instruction %d\n", i);
 		}
         if (l->arguments_number != base->cw_tab[l->op_code - 1].num_args)
 		{
-			my_printf("Error arguments number\n");
+			my_printf("Error arguments number instruction %d\n", i);
 		}
         for (int z = 0; z < l->arguments_number; z++)
         {
             if (!arg_validation_dispatcher(l->op_code, l->arguments[z].type, z))
 			{
-				my_printf("ERRRORRRR for %d %d %d\n", z, l->op_code,
-                          l->arguments[z].type);
+				my_printf("Error: argument number %d (%s) is invalid!\n", z, l->arguments[z].name);
 			}
 
             if (has_acb(l->op_code))
@@ -76,40 +75,7 @@ void preprocess(t_base *base)
             set_value(l);
         }
     }
-
-    // for (int i = 0; i < base->instructions_len + 1; i++)
-    // {
-    //     printf("%d %d %x %x %x %x\n", i, base->instructions[i].op_code,
-    //            base->instructions[i].acb,
-    //            base->instructions[i].arguments[0].value.integer,
-    //            base->instructions[i].arguments[1].value.integer,
-    //            base->instructions[i].arguments[2].value.integer);
-    // }
 }
-// for each inst
-// use code
-// set acb or not depends on code
-// for range args
-// add 1, 2, 4 bytes value
-// get arg bin
-
-// on error exit
-
-// 2 bytes ind
-// 2-4 bytes dir
-// 1 byte register
-
-// ACB 1 byte 00 00 00 00
-//            1  2   3
-// T_REG = 01
-// T_DIR = 10
-// T_IND = 11
-
-// first argument
-// (f || REGISTER)
-
-// if acb != operation acb
-// exit
 
 argument_value find_label_address(t_base *base, char *s)
 {
@@ -269,15 +235,8 @@ void compile(t_base *base, char *filename, header_t *metadata)
     char *buffer;
     char *asm_name = get_asm_name(filename);
     fd = open(asm_name, O_RDWR | O_CREAT | O_TRUNC, 0644);
+	printf("Writing bytecode to %s\n", asm_name);
     free(asm_name);
-
-    //                          op acb arg1 arg2 arg3
-    // 4 byte arg1 T_DIR 4 arg1
-    // 2 byte arg1 T_DIR 2 arg1 << 16 arg1 >> 16
-    // 4 byte arg1 T_IND 4 arg1
-    // 1 byte arg1 T_REG arg1 << 24 arg >> 24
-
-    // if label > find label operation start point byte [0, PROG_SIZE]
 
     buffer = (char *)malloc(sizeof(char) * ((base->instructions_len + 1) * 14));
     int byte_counter = fill_operation(base, buffer);
@@ -285,30 +244,8 @@ void compile(t_base *base, char *filename, header_t *metadata)
     fill_address(base, buffer);
 
 	metadata->prog_size  = byte_counter;
-	printf("Byte counter: %d\n", byte_counter);
 	write_metadata(metadata, fd);
     write(fd, buffer, byte_counter);
 
     close(fd);
-    free(buffer);
-
-    // 1 need address of direct | indirect label
-    // 2 need address of instruction where label is called
-    // 3 need address of label instruction that was called
-
-    // this part for linux based compiler
-    // int c = 0;
-    // for (int i = 0; i < byte_counter; i++)
-    // {
-    //     printf("%x  ", buffer[i]);
-    //     if (c == 0 )
-    //     {
-    //         c = 1;
-    //         write(fd, &buffer[i + 1], 1);
-    //     } else
-    //     {
-    //         c = 0;
-    //         write(fd, &buffer[i - 1], 1);
-    //     }
-    // }
 }

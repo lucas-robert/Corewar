@@ -10,8 +10,6 @@ int convert_int(unsigned char *res, int number, int size)
         unsigned char byte[4];
     } byte_writer;
 
-    // my_bzero(res, size);
-	printf("%x", number);
     byte_writer.integer = number;
     // int i = size;
 	int i = 0;
@@ -24,7 +22,6 @@ int convert_int(unsigned char *res, int number, int size)
 		--end;
 		i++;
     }
-	printf("==> %.2x %.2x %.2x %.2x \n", res[0],res[1],res[2],res[3]);
     return size;
 }
 

@@ -1,10 +1,17 @@
 #include <corewar1.h>
 
+
+void init_metadata(header_t *metadata)
+{
+	metadata->magic = COREWAR_EXEC_MAGIC;
+	my_memset(metadata->prog_name, 0, PROG_NAME_LENGTH);
+	my_memset(metadata->comment, 0, COMMENT_LENGTH);
+}
+
 // will add name from " to "
 void set_name(char *line, header_t *metadata, t_base *base)
 {
     int i;
-	my_memset(metadata->prog_name, 0, PROG_NAME_LENGTH);
 
     i = 0;
     while (*line && *line != '"')
@@ -34,12 +41,12 @@ void set_name(char *line, header_t *metadata, t_base *base)
 }
 
 // will add comment from " to "
-void set_comment(char *line, header_t *metadata, t_base *base)
+void set_comment(char **code, int *line_index, header_t *metadata, t_base *base)
 {
-    int i;
-	my_memset(metadata->comment, 0, COMMENT_LENGTH);
+    int i = 0;
+	char  *line = code[*line_index];
+	char found = 0;
 
-    i = 0;
     while (*line && *line != '"')
     {
         line++;
@@ -48,13 +55,28 @@ void set_comment(char *line, header_t *metadata, t_base *base)
     {
         my_error(COMMENT_DOES_NOT_EXIST, base);
     }
+
     line++;
-    while (*line && *line != '"' && i < COMMENT_LENGTH)
-    {
-        metadata->comment[i] = *line;
-        line++;
-        i++;
-    }
+	while (!found)
+	{
+		while (*line && i < COMMENT_LENGTH)
+	    {
+			if (*line == '"')
+			{
+				found = 1;
+				break;
+			}
+	        metadata->comment[i] = *line;
+	        line++;
+	        i++;
+	    }
+		if (!found)
+		{
+			(*line_index)++;
+			line = code[*line_index];
+		}
+	}
+
     metadata->comment[i] = '\0';
     if (*line == 0)
     {
@@ -77,25 +99,28 @@ void find_metadata(t_base *base, header_t *metadata)
     name_found = 0;
     comment_found = 0;
     line = NULL;
+
     if (base->lines == 0) my_error(EMPTY_FILE, base);
     for (int i = 0; i < base->lines; i++)
     {
         line = base->code[i];
+
         if (line[0] != 0 && (line[0] == COMMENT_CHAR || line[0] == '\n'))
             continue;
         else if (my_strncmp(line, COMMENT_CMD_STRING,
                             my_strlen(COMMENT_CMD_STRING)) == 0 &&
                  !comment_found)
         {
-            set_comment(line, metadata, base);
-            comment_found = 1;
+			set_comment(base->code, &i, metadata, base);
+			comment_found = 1;
+
         }
         else if (my_strncmp(line, NAME_CMD_STRING,
                             my_strlen(NAME_CMD_STRING)) == 0 &&
                  !name_found)
         {
             set_name(line, metadata, base);
-            name_found = 1;
+			name_found = 1;
         }
         else if (!name_found || !comment_found)
         {

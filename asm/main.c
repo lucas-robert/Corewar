@@ -2,6 +2,7 @@
 
 int main(int ac, char **av)
 {
+	header_t metadata;
     t_base base = {0,  // Code
                    0,  // Lines
                    0,  // Instruction
@@ -66,9 +67,8 @@ int main(int ac, char **av)
     read_file(av[1], &base);
 
     // set default data for head
-    header_t metadata;
-    metadata.magic = COREWAR_EXEC_MAGIC;
 
+	init_metadata(&metadata);
     find_metadata(&base, &metadata);
     tokenize(&base);
     parse_tokens(&base);
