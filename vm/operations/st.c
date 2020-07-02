@@ -42,6 +42,10 @@ void my_st(t_vm *machine, t_process *process, const cw_t *operation)
 			{
 				printf("Process %d | %s r%d %d\n", process->id, operation->mnemonique, arg[0], address);
 			}
+			if (machine->gui)
+			{
+				update_storage_gui(machine, arg[i], process->champion_id);
+			}
 		}
 	}
 	process->pc = ring(process->pc + index);

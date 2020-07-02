@@ -1,6 +1,4 @@
-# Corewar
-
-Part 2: Virtual machine
+# Corewar - Virtual machine
 
 ## Installation
 

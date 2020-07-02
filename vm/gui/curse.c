@@ -95,7 +95,7 @@
 
 void init_color_pairs()
 {
-	init_pair(0, COLOR_WHITE, COLOR_BLACK);
+	// init_pair(0, COLOR_WHITE, COLOR_BLACK);
 	//CHAMP 1
 	init_pair(1, COLOR_RED, COLOR_BLACK); // CODE
 	init_pair(10, COLOR_CYAN, COLOR_RED); // PC
@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
 // /	delwin(legend);
 	start_color();
 	init_color_pairs();
-	attron(COLOR_PAIR(1) | COLOR_PAIR(4));
+	attron(COLOR_PAIR(4));
 	mvaddstr(0,0, "Salut les copains");
 	refresh();
 	attroff(COLOR_PAIR(4));
@@ -169,8 +169,12 @@ int main(int argc, char *argv[])
 	refresh();
 	attroff(COLOR_PAIR(1));
 	sleep(2);
+	color_set(1, NULL);
 
-	// chgat(-1, A_REVERSE, 0, NULL);
+	move(0,0);
+	chgat(-1, A_STANDOUT, -1, NULL);
+	sleep(2);
+	chgat(-1, -A_STANDOUT, 0, NULL);
 
 	attron(COLOR_PAIR(3));
 	chtype byte;

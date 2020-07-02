@@ -185,6 +185,7 @@ typedef struct s_vm {
 	t_champion *last_alive;
 	t_champion_array champions;
 	t_node *process_stack;
+	int has_gui;
 	t_gui *gui;
 } t_vm;
 
@@ -251,6 +252,7 @@ int get_reg_number(t_vm *machine, t_process *process, int *index, args_type_t ty
 */
 // errors.c
 int my_error(ERRORS err_code, char *str);
+void delete_vm(t_vm *machine);
 
 /*
 **  GUI
@@ -280,6 +282,7 @@ int get_dir_size(int opcode);
 int has_acb(int opcode);
 
 //ncurses_update_core.c
+void update_storage_gui(t_vm *machine, int address, int champion_id);
 void update_core_gui(t_vm *machine, int pc, int champion_id);
 void unset_core_gui(t_vm *machine, int pc, int champion_id);
 void unset_core_gui_continue(t_vm *machine, int pc, int champion_id);

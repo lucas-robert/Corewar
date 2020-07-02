@@ -33,9 +33,15 @@ int parse_champions(t_vm *machine, char **av)
 
 	if (read_champions(&machine->champions) > 0)
 	{
+		// delete_vm(machine);
 		return EXIT_FAILURE;
 	}
-	
+
+	if (machine->has_gui)
+	{
+		init_gui(machine);
+	}
+
 	place_champions(machine);
 	machine->last_alive = set_last_alive(machine);
 	return EXIT_SUCCESS;

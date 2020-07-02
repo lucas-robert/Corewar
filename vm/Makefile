@@ -8,6 +8,7 @@ SRC =	main.c \
 		cpu/process_execution.c \
 		cpu/op.c \
 		errors/errors.c \
+		errors/deleter.c \
 		gui/ncurses_helpers.c \
 		gui/ncurses_legend.c \
 		gui/ncurses_update_core.c \

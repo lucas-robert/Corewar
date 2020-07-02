@@ -66,6 +66,7 @@ void init_vm(t_vm *machine)
 	machine->dump_cycle = -1;
 	machine->verbosity = 0;
 	machine->gui = 0;
+	machine->has_gui = 0;
 	my_memset(machine->battlefield, 0, MEM_SIZE + 1);
 	// print_memory(machine);
 }
