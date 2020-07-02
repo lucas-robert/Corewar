@@ -107,3 +107,11 @@ int read_champions(t_champion_array *champions)
 	}
 	return EXIT_SUCCESS;
 }
+
+void init_champs_id(t_champion_array *champions)
+{
+	for (int i = 0; i < MAX_PLAYERS_NUMBER; i++)
+	{
+		champions->array[i].id = -5;
+	}
+}

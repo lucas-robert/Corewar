@@ -24,7 +24,8 @@ int play(t_vm *machine)
 		{
 			if (!machine->gui)
 				print_memory(machine);
-			delete_list(&machine->process_stack);
+			printf("Last alive: %p\n", machine->last_alive->name);
+			printf("array : %p\n", machine->champions.array[3].name);
 			return 1;
 		}
 		if (find_winner(machine))
@@ -32,7 +33,10 @@ int play(t_vm *machine)
 			return 0;
 		}
 		if (death_checker(machine))
+		{
 			return 0;
+		}
+
 
 		if (machine->gui)
 		{

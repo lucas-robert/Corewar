@@ -14,11 +14,6 @@ int find_winner(t_vm *machine)
 		nb_process++;
 		tmp = tmp->next;
 	}
-	if (nb_process == 1)
-	{
-		machine->last_alive = set_last_alive(machine);
-	}
-
 	return (nb_process > 1 ? 0 : 1);
 }
 

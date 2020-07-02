@@ -27,7 +27,7 @@ void my_xor(t_vm *machine, t_process *process, const cw_t *operation)
 
 	}
 	process->registers[arg[2]] = arg[0] ^ arg[1];
-	process->carry = (process->registers[arg[2]] = 0 ? 1 : 0);
+	process->carry = (process->registers[arg[2]] ? 0 : 1);
 	process->pc = ring(process->pc + index);
 	if (machine->verbosity & VERBOSE_OP)
 	{

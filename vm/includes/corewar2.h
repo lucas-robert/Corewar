@@ -210,6 +210,7 @@ int handle_option(char **av, t_vm *machine, int *index, int *next_n);
 */
 
 // champ_init.c
+void init_champs_id(t_champion_array *champions);
 int read_champions(t_champion_array *champions);
 
 // machine_init.c

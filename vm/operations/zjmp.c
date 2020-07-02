@@ -17,10 +17,11 @@ void my_zjmp(t_vm *machine, t_process *process, const cw_t *operation)
 	}
 	else
 	{
+		process->pc = ring(process->pc + index);
 		if (machine->verbosity & VERBOSE_OP)
 		{
 			printf("Process %d | %s %d FAIL\n", process->id, operation->mnemonique, address);
 		}
-		process->pc = ring(process->pc + index);
+
 	}
 }

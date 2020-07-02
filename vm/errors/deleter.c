@@ -11,6 +11,7 @@ void delete_vm(t_vm *machine)
 		endwin();
 		free(machine->gui);
 	}
+	delete_list(&machine->process_stack);
 	machine = NULL;
 	return;
 }

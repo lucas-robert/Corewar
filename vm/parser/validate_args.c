@@ -6,6 +6,7 @@ int parse_champions(t_vm *machine, char **av)
 	int next_n = 0;
 	int champion_id = 0;
 	init_vm(machine);
+	init_champs_id(&machine->champions);
 
 	while(av[index])
 	{
