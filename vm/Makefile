@@ -11,6 +11,7 @@ SRC =	main.c \
 		errors/deleter.c \
 		gui/ncurses_helpers.c \
 		gui/ncurses_legend.c \
+		gui/ncurses_unset_core.c \
 		gui/ncurses_update_core.c \
 		gui/ncurses_init.c \
 		gui/print_memory.c \
@@ -44,7 +45,6 @@ LIB = ./src/lib.a
 SANITIZE = -fsanitize=address -Wall -Wextra -Werror
 CLAFGS = -Wall -Wextra -Werror
 GUI = -lncurses
-
 
 all: $(NAME)
 

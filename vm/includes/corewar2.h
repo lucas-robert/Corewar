@@ -263,7 +263,6 @@ void delete_vm(t_vm *machine);
 # define MIN_LINE 70
 # define CORE_SIZE (BYTES_PER_LINE * 3) + ADDRESS_INDICATOR + 2
 # define HEADER_SIZE 8
-# define SLEEP_TIME 10000000000 //nanoseconds
 
 // print_memory.c
 void print_memory(t_vm *machine);
@@ -282,12 +281,14 @@ int get_op_size(t_vm *machine, int pc);
 int get_dir_size(int opcode);
 int has_acb(int opcode);
 
-//ncurses_update_core.c
-void update_storage_gui(t_vm *machine, int address, int champion_id);
-void update_core_gui(t_vm *machine, int pc, int champion_id);
+//ncurses_unset_core.c
 void unset_core_gui(t_vm *machine, int pc, int champion_id);
 void unset_core_gui_continue(t_vm *machine, int pc, int champion_id);
 void gui_unseter(t_vm *machine, t_process *process);
+
+//ncurses_update_core.c
+void update_storage_gui(t_vm *machine, int address, int champion_id);
+void update_core_gui(t_vm *machine, int pc, int champion_id);
 
 //ncurses_legend.c
 void gui_legend(t_vm *machine);

@@ -1,9 +1,11 @@
 #include <corewar2.h>
 
+
+static const int SLEEP_NSEC = 9999999;
 void reduce_speed()
 {
 
-	const struct timespec sleeper = {0, SLEEP_TIME};
+	const struct timespec sleeper = {0, SLEEP_NSEC};
 	nanosleep(&sleeper, NULL);
 }
 
@@ -42,7 +44,6 @@ int play(t_vm *machine)
 		{
 			gui_legend(machine);
 			reduce_speed();
-			sleep(1);
 		}
 		machine->current_cycle += 1;
 	}

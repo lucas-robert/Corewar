@@ -169,20 +169,27 @@ int main(int argc, char *argv[])
 	refresh();
 	attroff(COLOR_PAIR(1));
 	sleep(2);
-	color_set(1, NULL);
+	// color_set(1, NULL);
 
 	move(0,0);
-	chgat(-1, A_STANDOUT, -1, NULL);
+	chtype byte;
+	byte = mvinch(0,0);
+	mvprintw(4,5, "%ld\n", PAIR_NUMBER(byte & A_COLOR));
+	refresh();
+	byte = mvinch(0,0);
+	chgat(3, A_STANDOUT, PAIR_NUMBER(byte & A_COLOR), NULL);
 	sleep(2);
-	chgat(-1, -A_STANDOUT, 0, NULL);
 
 	attron(COLOR_PAIR(3));
-	chtype byte;
+
 	byte = mvinch(0,0);
 
 	if ((byte & A_COLOR) == COLOR_PAIR(4))
 	{
 		mvprintw(2,1, "4");
+		byte = mvinch(0,0);
+		mvprintw(4,5, "%ld\n", byte & A_COLOR);
+
 	}
 	if ((byte & A_COLOR) == COLOR_PAIR(1))
 	{
