@@ -63,4 +63,3 @@ The assembly language is made of only one instruction per line.
 * [0x0E] lldi: Same as ldi but does not apply modulo on the address. Modifies the carry.
 * [0x0F] lfork: Like fork without modulo
 * [0x10] aff: One encoding byte for parameter. It only takes one parameter, a register. The value (mod 256) of the register is interpreted as an ASCII char.
-The Encoding
