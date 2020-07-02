@@ -27,8 +27,4 @@ void my_sti(t_vm *machine, t_process *process, const cw_t *operation)
 	{
 		printf("Process %d | %s %d %d %d\n", process->id, operation->mnemonique, arg[0], arg[1], arg[2]);
 	}
-	if (machine->gui)
-	{
-		update_storage_gui(machine, ring(process->pc + ((arg[1] + arg[2]) % IDX_MOD)), process->champion_id);
-	}
 }

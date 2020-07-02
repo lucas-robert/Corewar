@@ -9,11 +9,6 @@ SRC =	main.c \
 		cpu/op.c \
 		errors/errors.c \
 		errors/deleter.c \
-		gui/ncurses_helpers.c \
-		gui/ncurses_legend.c \
-		gui/ncurses_unset_core.c \
-		gui/ncurses_update_core.c \
-		gui/ncurses_init.c \
 		gui/print_memory.c \
 		gui/results.c \
 		initializer/champ_init.c \
@@ -44,14 +39,13 @@ INCLUDES_LIB = -I ./src/includes
 LIB = ./src/lib.a
 SANITIZE = -fsanitize=address -Wall -Wextra -Werror
 CLAFGS = -Wall -Wextra -Werror
-GUI = -lncurses
 
 all: $(NAME)
 
 $(NAME) : $(OBJECT_MY_VM)
 	make -C ./src
 	@echo "\033[0;32m[LIB COMPILED]\033[0;0m"
-	@gcc -o $(NAME) $(SANITIZE) $(CFLAGS) $(OBJECT_MY_VM) $(LIB) $(GUI)
+	@gcc -o $(NAME) $(SANITIZE) $(CFLAGS) $(OBJECT_MY_VM) $(LIB)
 	# @gcc -o $(NAME) $(OBJECT_MY_VM) $(LIB)
 	@echo "\033[0;32m[COREWAR COMPILED]\033[0;0m"
 

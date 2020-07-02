@@ -33,10 +33,6 @@ void set_next_op(t_vm *machine, t_process *process)
 		delete_node(&machine->process_stack, process);
 		return;
 	}
-	if (machine->gui)
-	{
-		update_core_gui(machine, process->pc, process->champion_id);
-	}
 	if (process->next_op != CONTINUE)
 	{
 		process->cycle_till_exec = cw_tab[process->next_op].num_cycles - 1;
@@ -59,7 +55,6 @@ void execute_process(t_vm *machine, t_process *process)
 	}
 	else
 	{
-		gui_unseter(machine, process);
 		if (is_op_valid(process->next_op))
 		{
 			(*operations[process->next_op])(machine, process, &cw_tab[process->next_op]);

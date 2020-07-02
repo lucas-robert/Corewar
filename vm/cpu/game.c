@@ -38,13 +38,6 @@ int play(t_vm *machine)
 		{
 			return 0;
 		}
-
-
-		if (machine->gui)
-		{
-			gui_legend(machine);
-			reduce_speed();
-		}
 		machine->current_cycle += 1;
 	}
 }

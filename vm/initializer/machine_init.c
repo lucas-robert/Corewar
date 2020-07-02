@@ -43,14 +43,6 @@ void place_champions(t_vm *machine)
 	{
 		my_memcpy(&machine->battlefield[padding * i], machine->champions.array[i].code, machine->champions.array[i].exec_code_size);
 		init_process(machine, (padding * i), i + 1);
-		if (machine->gui)
-		{
-			ncurses_place_champion(machine, (padding * i), i);
-		}
-	}
-	if (machine->gui)
-	{
-		gui_legend(machine);
 	}
 	return;
 }
