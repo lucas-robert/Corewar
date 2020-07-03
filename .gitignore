@@ -60,6 +60,10 @@ vm/custom
 vm/test.c
 
 
+:q
+:q
 asm/files
 asm/asm
 asm/myrcc_macos
+*.DS_Store
+./asm/champs/
